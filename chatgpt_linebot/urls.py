@@ -6,6 +6,8 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 
+from .prompts import girlfriend
+
 sys.path.append(".")
 
 import config
@@ -52,7 +54,8 @@ def handle_message(event) -> None:
     # Text message
     if isinstance(event.message, TextMessage):
         # Get user sent message
-        user_message = event.message.text
+        pre_prompt = girlfriend
+        user_message = f"{pre_prompt}:\n{event.message.text}"
 
         try:
           response = g4f.ChatCompletion.create(
