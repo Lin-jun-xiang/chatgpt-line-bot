@@ -2,7 +2,6 @@ import sys
 
 import g4f
 from fastapi import APIRouter, HTTPException, Request
-
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
@@ -55,10 +54,13 @@ def handle_message(event) -> None:
         # Get user sent message
         user_message = event.message.text
 
-        response = g4f.ChatCompletion.create(
-            model=g4f.models.default,
-            messages=[{"role": "user", "content": user_message}],
-        )
+        try:
+          response = g4f.ChatCompletion.create(
+              model=g4f.models.default,
+              messages=[{"role": "user", "content": user_message}],
+          )
+        except Exception as e:
+          response = f"Their're something wrong: {e}"
 
         # Reply with same message
         messages = TextSendMessage(text=response)
