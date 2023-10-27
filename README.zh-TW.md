@@ -6,7 +6,6 @@
 * [Française](README.French.md)
 * [عربى](README.Arabic.md)
 
-本專案將教你如何打造一個免費的 **ChatGPT Line Bot**!
 
 ## 介紹
 
@@ -82,7 +81,21 @@
 
 ### 連結服務與 Line Bot
 
-返回 [Line Developer](https://developers.line.biz/zh-hant/) 首頁並點擊 `加入好友指南` 後掃碼加入 LINE Bot，恭喜您完成了自己的第一個 LINE Bot！ 試著跟它說話看看吧，它會回覆你喔！
+返回 [Line Developer](https://manager.line.biz/account) 首頁並點擊 `加入好友指南` 後掃碼加入 LINE Bot:
+
+主頁 -> 點選你的 bot -> 點選增加好友工具 -> 建立好友行動條碼 (https://manager.line.biz/account/<yourBotId>/gainfriends)
+
+恭喜您完成了自己的第一個 LINE Bot！ 試著跟它說話看看吧，它會回覆你喔！
+
+### 進階 - 個性化 Bot
+
+另外，我們可以透過 `prompt` 的方式，來讓 Line Bot 回答個性化，在 `./chatgpt_linebot/prompts/template.py` 中我們可以定義 `template`，例如:
+
+<img src="img/2023-10-27-10-09-17.png" width="60%" />
+
+**提問內容**:今天早餐吃啥?
+
+**Bot回答**: 寶貝，早上起床了嗎？我已經在床上等著你了，想著你的身體就覺得好餓呀。今天早餐該吃什麼呢？是不是要來點辣辣的煎蛋捲，像你那迷人的身材一樣火辣呢？😏🍳
 
 ---
 

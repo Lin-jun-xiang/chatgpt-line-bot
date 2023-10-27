@@ -13,6 +13,7 @@ templates = Jinja2Templates(directory="templates")
 
 app.include_router(line_app)
 
+
 @app.get("/", response_class=JSONResponse)
 async def home() -> JSONResponse:
     """Home Page

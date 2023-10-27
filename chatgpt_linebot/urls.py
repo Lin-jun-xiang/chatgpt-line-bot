@@ -6,16 +6,18 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 
-from .prompts import girlfriend
+from chatgpt_linebot.memory import Memory
+from chatgpt_linebot.prompts import girlfriend
 
 sys.path.append(".")
 
 import config
 
+line_app = APIRouter()
+memory = Memory(3)
+
 line_bot_api = LineBotApi(config.LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(config.LINE_CHANNEL_SECRET)
-
-line_app = APIRouter()
 
 
 @line_app.post("/callback")
@@ -42,6 +44,24 @@ async def callback(request: Request) -> str:
     return "OK"
 
 
+def chat_completion(user_id: int) -> str:
+    try:
+        response = g4f.ChatCompletion.create(
+            model=g4f.models.default,
+            messages=memory.get(user_id),
+        )
+        memory.append(user_id, 'system', response)
+
+    except Exception as e:
+        response = (
+        f"There're something wrong, please try again.\n"
+        "Or connect to developer: https://github.com/Lin-jun-xiang/chatgpt-line-bot/issues"
+        )
+        print(e)
+
+    return response
+
+
 @handler.add(MessageEvent, message=(TextMessage))
 def handle_message(event) -> None:
     """Event - User sent message
@@ -50,20 +70,15 @@ def handle_message(event) -> None:
         event (LINE Event Object): Refer to https://developers.line.biz/en/reference/messaging-api/#message-event
     """
     reply_token = event.reply_token
+    user_id = event.source.user_id
 
     # Text message
     if isinstance(event.message, TextMessage):
         # Get user sent message
         pre_prompt = girlfriend
         user_message = f"{pre_prompt}:\n{event.message.text}"
-
-        try:
-          response = g4f.ChatCompletion.create(
-              model=g4f.models.default,
-              messages=[{"role": "user", "content": user_message}],
-          )
-        except Exception as e:
-          response = f"Their're something wrong: {e}"
+        memory.append(user_id, 'user', user_message)
+        response = chat_completion(user_id)
 
         # Reply with same message
         messages = TextSendMessage(text=response)
