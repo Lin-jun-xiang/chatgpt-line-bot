@@ -68,18 +68,32 @@ def handle_message(event) -> None:
 
     Args:
         event (LINE Event Object): Refer to https://developers.line.biz/en/reference/messaging-api/#message-event
+    Refs:
+        https://www.21cs.tw/Nurse/showLiangArticle.xhtml?liangArticleId=503
     """
+    if not isinstance(event.message, TextMessage):
+        return
+
     reply_token = event.reply_token
     user_id = event.source.user_id
 
-    # Text message
-    if isinstance(event.message, TextMessage):
+    if event.source.type == 'user':
+
         # Get user sent message
         pre_prompt = girlfriend
         user_message = f"{pre_prompt}:\n{event.message.text}"
         memory.append(user_id, 'user', user_message)
         response = chat_completion(user_id)
 
-        # Reply with same message
-        messages = TextSendMessage(text=response)
-        line_bot_api.reply_message(reply_token=reply_token, messages=messages)
+    elif event.source.type == 'group':
+        group_id = event.source.group_id
+
+        # Get user sent message
+        pre_prompt = girlfriend
+        user_message = f"{pre_prompt}:\n{event.message.text}"
+        memory.append(group_id, str(user_id), user_message)
+        response = chat_completion(group_id)
+
+    # Reply with same message
+    messages = TextSendMessage(text=response)
+    line_bot_api.reply_message(reply_token=reply_token, messages=messages)
