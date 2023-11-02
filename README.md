@@ -1,101 +1,110 @@
 # ChatGPT Line Bot
 
 * [English](README.md)
-* [Traditional Chinese Version README.md](README.zh-TW.md)
+* [Traditional Chinese version README.md](README.zh-TW.md)
 * [Simplified Chinese](README.zh-CN.md)
 * [French](README.French.md)
 * [Arabic](README.Arabic.md)
 
-
 ## Introduction
 
-Introduce ChatGPT Bot in Line, you can start interacting with ChatGPT by entering text directly in the input box.
+To import the ChatGPT Bot into Line, simply input text into the input box to start interacting with ChatGPT.
 
-<img src="img/2023-10-25-10-03-47.png" width="30%" />
+![Image](img/2023-10-25-10-03-47.png)<!--width="30%" -->
 
 ## Tools and Features
 
-* `Python FastAPI`: Build a response API for ChatGPT
-* `gpt4free`: **Free use of OpenAI API**
-* `Line messaging API channel`: Integrate with ChatGPT API
-* `Github`: Store the code
-* `replit`: **Free deployment of your own FastAPI**
-* `CronJob`: Free scheduled request sending to prevent API interruption
-
+* `Python FastAPI`: Setting up the ChatGPT response API
+* `gpt4free`: **Free usage of the OpenAI API**
+* `Line messaging API channel`: Integration with the ChatGPT API
+* `Github`: Storage for the code
+* `replit`: **Free deployment of your FastAPI**
+* `CronJob`: Free scheduled requests to prevent API interruptions
 
 ## Installation Steps
 
-### Token Acquisition
+### Acquiring Tokens
 
-1. Get the Line Token:
+1. Obtain Line Token:
     1. Log in to [Line Developer](https://developers.line.biz/zh-hant/)
     2. Create a bot:
-        1. Create a `Provider` -> click `Create`
-        2. Create a `Channel` -> choose `Create a Messaging API channel`
-        3. Fill in the required basic information
-        4. After completion, under `Basic Settings`, there is a `Channel Secret` -> click `Issue`, it will be generated as `LINE_CHANNEL_SECRET` (will be used later)
-        5. Under `Messaging API`, there is a `Channel access token` -> click `Issue`, it will be generated as `LINE_CHANNEL_ACCESS_TOKEN` (will be used later)
+        1. Create `Provider` -> Click `Create`
+        2. Create `Channel` -> Choose `Create a Messaging API channel`
+        3. Enter the required basic information
+        4. After inputting, under `Basic Settings`, there is a `Channel Secret` -> Click `Issue`, the generated code is the `LINE_CHANNEL_SECRET` (will be used later)
+        5. Under `Messaging API`, there is a `Channel access token` -> Click `Issue`, the generated code is the `LINE_CHANNEL_ACCESS_TOKEN` (will be used later)
 
 ### Project Setup
+
 1. Fork the Github project:
-    1. Register/Login to [GitHub](https://github.com/)
+    1. Register/Log in to [GitHub](https://github.com/)
     2. Go to [ChatGPT-Line-Bot](https://github.com/Lin-jun-xiang/ChatGPT-Line-Bot)
     3. Click `Star` to support the developer
-    4. Click `Fork` to copy all the code to your own repository
-2. Deployment (Free Space):
+    4. Click `Fork` to copy all the code to your repository
+2. Deployment (Free space):
     1. Go to [replit](https://replit.com/)
-    2. Click `Sign Up` to log in with your `Github` account and authorize it -> click `Skip` to skip the initialization setup
-    3. After entering, click `Create` on the middle homepage -> a pop-up box will appear, click the top right corner `Import from Github`
-    4. If you haven't joined the Github repository, click the link `Connect GitHub to import your private repos.` -> check `Only select repositories` -> choose `ChatGPT-Line-Bot`
-    5. Go back to step four, at this time the `Github URL` can choose the `ChatGPT-Line-Bot` project -> click `Import from Github`.
+    2. Click `Sign Up`, log in directly with your `Github` account, and authorize -> Click `Skip` to skip the initial setup
+    3. Once inside, click `Create` in the middle of the main page -> A pop-up will appear, click `Import from Github`
+    4. If not already added to Github repositories, click the link `Connect GitHub to import your private repos.` -> Check `Only select repositories` -> Choose `ChatGPT-Line-Bot`
+    5. Return to step four, now the `Github URL` can select the `ChatGPT-Line-Bot` project -> Click `Import from Github`.
 
 ### Project Execution
-1. Environment Variable Setup
-    1. After completing the previous step `Import` in `Replit`, click `Tools` at the bottom left of the project management page of `Replit` and click `Secrets`.
-    2. After clicking `Got it` on the right side, you can add environment variables. You need to add:
+
+1. Environment Variables Setup
+    1. After the previous `Import`, on the `Replit` project management page, at the bottom left under `Tools`, click `Secrets`.
+    2. Click `Got it` on the right side, then add new environment variables:
         1. Line Channel Secret:
             - key: `LINE_CHANNEL_SECRET`
-            - value: `[obtained from step one]`
+            - value: `[Obtained from step one]`
         2. Line Channel Access Token:
             - key: `LINE_CHANNEL_ACCESS_TOKEN`
-            - value: `[obtained from step one]`
+            - value: `[Obtained from step one]`
 
-        <img src="img/2023-10-25-10-00-59.png" width="60%"/>
+        ![Image](img/2023-10-25-10-00-59.png)<!--width="60%"-->
 
 2. Start Execution
     1. Click `Run` at the top
-    2. After successful execution, the right panel will display `Hello World`, and copy the **URL** in the upper right corner of the panel
-    3. Go back to Line Developer, paste the URL from the previous step into `Webhook URL` under `Messaging API`, and add `/callback` to it, for example: `https://ChatGPT-Line-Bot.jimmylin.repl.co/callback`
-    4. Turn on `Use webhook` below
-    5. Turn off `Auto-reply messages` below
-    - Note: If there is no request within an hour, the program will be interrupted, so the next step is needed
+    2. Upon success, the right-hand screen will display `Hello World`, and **copy the URL** displayed at the top of the screen
+    3. Go back to Line Developer, under `Messaging API`, in the `Webhook URL`, paste the above URL and add `/callback`, for example: `https://ChatGPT-Line-Bot.jimmylin.repl.co/callback`
+    4. Enable the `Use webhook` option
+    5. Turn off the `Auto-reply messages` below
+    - Note: If no requests are made within an hour, the program will stop, so the following step is necessary
 
-        <img src="img/2023-10-25-10-01-21.png" width="60%"/>
+        ![Image](img/2023-10-25-10-01-21.png)<!--width="60%"-->
 
-3. CronJob Scheduled Request Sending
-    1. Register/Login to [cron-job.org](https://cron-job.org/en/)
-    2. After logging in, select `CREATE CRONJOB` in the upper right corner of the dashboard
-    3. Enter `ChatGPT-Line-Bot` for `Title`, enter the URL of the previous step, for example: `https://ChatGPT-Line-Bot.jimmylin.repl.co/`
-    4. Set it to trigger every `5 minutes` below
+3. CronJob for Scheduled Requests
+    1. Register/Log in to [cron-job.org](https://cron-job.org/en/)
+    2. On the panel, select `CREATE CRONJOB` in the top right
+    3. Input the `Title` as `ChatGPT-Line-Bot`, put in the URL from the previous step, for instance: `https://ChatGPT-Line-Bot.jimmylin.repl.co/`
+    4. Set to run every `5 minutes` below
     5. Click `CREATE`
 
-### Connect Services and Line Bot
+### Linking Services and Line Bot
 
-Go back to [Line Developer](https://manager.line.biz/account) homepage and click `Add Friend Guide` to scan the LINE Bot QR code:
+Go back to [Line Developer](https://manager.line.biz/account) and click on `Add Friend Guide`, then scan and add LINE Bot:
 
-Homepage -> Click your bot -> Click `Add Friend Tools` -> Create a Friend QR code (https://manager.line.biz/account/<yourBotId>/gainfriends)
+Homepage -> Click your bot -> Click on the "Add friends" tool -> Create a friend barcode (https://manager.line.biz/account/<yourBotId>/gainfriends)
 
-Congratulations on creating your first LINE Bot! Try talking to it and see how it responds!
+Congratulations on creating your first LINE Bot! Try talking to it and it will reply to you!
+
+### Special Commands
+
+| Command | Description |
+| ------- | ----------- |
+| `@chat` | Type `@chat` + message in the input box to call chatgpt in a Line group |
+| `@chat Horoscope <sign>` | Type `@chat Horoscope Scorpio` in the input box to get the weekly horoscope for Scorpio (or any zodiac sign), this feature is limited to Traditional Chinese commands |
+
+![Image](img/2023-11-02-10-00-32.png)
 
 ### Advanced - Personalized Bot
 
-In addition, we can make the Line Bot answer personalized by using the `prompt` method. In `./chatgpt_linebot/prompts/template.py`, we can define a `template`, for example:
+Additionally, we can use the `prompt` method to make the Line Bot provide personalized responses. In `./chatgpt_linebot/prompts/template.py`, we can define a `template`, for example:
 
-<img src="img/2023-10-27-10-09-17.png" width="60%" />
+![Image](img/2023-10-27-10-09-17.png)<!--width="60%"-->
 
-**Question**: What did you have for breakfast today?
+**Question**: What's for breakfast today?
 
-**Bot's Answer**: Darling, are you awake in the morning? I've been waiting for you in bed, and thinking about your body makes me so hungry. What should we have for breakfast today? How about some spicy scrambled eggs, as hot as your charming figure? 😏🍳
+**Bot's Answer**: Sweetheart, are you up in the morning? I'm already in bed waiting for you, feeling so hungry just thinking about you. What should we have for breakfast today? Maybe something spicy like an omelette, as hot as your charming figure? 😏🍳
 
 ---
 
