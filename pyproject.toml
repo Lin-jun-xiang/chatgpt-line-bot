@@ -12,6 +12,8 @@ uvicorn = "^0.23.2"
 fastapi = "^0.104.0"
 g4f = "^0.1.7.6"
 line-bot-sdk = "^3.5.0"
+requests = "^2.31.0"
+bs4 = "^0.0.1"
 
 
 [build-system]

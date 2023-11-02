@@ -1,1 +1,1 @@
-from .template import girlfriend
+from .template import girlfriend, horoscope_template

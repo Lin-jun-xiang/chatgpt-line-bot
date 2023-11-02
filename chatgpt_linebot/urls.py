@@ -1,12 +1,12 @@
 import sys
 
-import g4f
 from fastapi import APIRouter, HTTPException, Request
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 
 from chatgpt_linebot.memory import Memory
+from chatgpt_linebot.modules import Horoscope, chat_completion
 from chatgpt_linebot.prompts import girlfriend
 
 sys.path.append(".")
@@ -15,6 +15,7 @@ import config
 
 line_app = APIRouter()
 memory = Memory(3)
+horoscope = Horoscope()
 
 line_bot_api = LineBotApi(config.LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(config.LINE_CHANNEL_SECRET)
@@ -44,25 +45,6 @@ async def callback(request: Request) -> str:
     return "OK"
 
 
-def chat_completion(id: int) -> str:
-    """Use OpenAI API via gpt4free providers"""
-    try:
-        response = g4f.ChatCompletion.create(
-            model=g4f.models.default,
-            messages=memory.get(id),
-        )
-        memory.append(id, 'system', response)
-
-    except Exception as e:
-        response = (
-        "There're something wrong in openai api, please try again.\n"
-        "Or connect to developer: https://github.com/Lin-jun-xiang/chatgpt-line-bot/issues"
-        )
-        print(e)
-
-    return response
-
-
 @handler.add(MessageEvent, message=(TextMessage))
 def handle_message(event) -> None:
     """Event - User sent message
@@ -79,26 +61,29 @@ def handle_message(event) -> None:
 
     reply_token = event.reply_token
     user_id = event.source.user_id
-    display_name = line_bot_api.get_profile(user_id).display_name # user name
     response = None
 
     # Get user sent message
+    user_message = event.message.text
     pre_prompt = girlfriend
-    user_message = f"{pre_prompt}:\n{event.message.text}"
+    refine_message = f"{pre_prompt}:\nuser_message"
 
-    if event.source.type == 'user':
-        memory.append(user_id, 'user', user_message)
-        response = chat_completion(user_id)
+    if user_message.startswith('@chat 星座運勢'):
+        response = horoscope.get_horoscope_response(user_message)
 
-    elif event.source.type == 'group' and event.message.text.startswith('@chat'):
+    elif event.source.type == 'user':
+        memory.append(user_id, 'user', refine_message)
+        response = chat_completion(user_id, memory)
+
+    elif event.source.type == 'group' and user_message.startswith('@chat'):
         group_id = event.source.group_id
-        memory.append(group_id, 'user', user_message.replace('@chat', ''))
-        response = chat_completion(group_id)
+        memory.append(group_id, 'user', refine_message.replace('@chat', ''))
+        response = chat_completion(group_id, memory)
 
-    elif event.source.type == 'room' and event.message.text.startswith('@chat'):
+    elif event.source.type == 'room' and user_message.startswith('@chat'):
         room_id = event.source.room_id
-        memory.append(room_id, 'user', user_message.replace('@chat', ''))
-        response = chat_completion(room_id)
+        memory.append(room_id, 'user', refine_message.replace('@chat', ''))
+        response = chat_completion(room_id, memory)
 
     # Reply with same message
     if response:
