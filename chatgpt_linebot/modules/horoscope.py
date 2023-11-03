@@ -1,10 +1,10 @@
 import json
 import re
 
-import g4f
 import requests
 from bs4 import BeautifulSoup
 
+from chatgpt_linebot.modules.gpt import chat_completion
 from chatgpt_linebot.prompts import horoscope_template
 
 
@@ -64,20 +64,9 @@ class Horoscope:
     def process_horoscope_response(self, content: str) -> str:
         if not content:
             return f"{self.error_msg}\nContent is None."
-
-        try:
-            response = g4f.ChatCompletion.create(
-                model=g4f.models.default,
-                messages=[{"role": "user", "content": horoscope_template+content}],
-            )
-
-        except Exception as e:
-            response = (
-            "There're something wrong in openai api, please try again.😱\n"
-            "Or connect to developer: https://github.com/Lin-jun-xiang/chatgpt-line-bot/issues"
-            )
-            print(e)
-
+        response = chat_completion(
+            [{"role": "user", "content": horoscope_template+content}]
+        )
         return response
 
     def get_horoscope_response(self, target: str) -> str:

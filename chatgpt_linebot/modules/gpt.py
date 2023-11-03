@@ -1,15 +1,15 @@
+from typing import Dict, List
+
 import g4f
-from chatgpt_linebot.memory import Memory
 
 
-def chat_completion(id: int, memory: Memory) -> str:
+def chat_completion(message: List[Dict]) -> str:
     """Use OpenAI API via gpt4free providers"""
     try:
         response = g4f.ChatCompletion.create(
             model=g4f.models.default,
-            messages=memory.get(id),
+            messages=message,
         )
-        memory.append(id, 'system', response)
         print(response)
 
     except Exception as e:

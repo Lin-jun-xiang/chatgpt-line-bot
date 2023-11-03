@@ -1,8 +1,7 @@
 import json
 import random
 
-import g4f
-
+from chatgpt_linebot.modules.gpt import chat_completion
 from chatgpt_linebot.prompts import youtube_recommend_template
 
 path = './data/favorite_videos.json'
@@ -16,12 +15,6 @@ def recommend_videos():
     push_video = random.sample(favorite_videos, 3)
 
     prompt = f"{youtube_recommend_template}{push_video}"
+    response = chat_completion([{"role": "user", "content": prompt}])
 
-    try:
-        response = g4f.ChatCompletion.create(
-            model=g4f.models.default,
-            messages=[{"role": "user", "content": prompt}],
-        )
-        return response
-    except Exception as e:
-        print(e)
+    return response
