@@ -21,7 +21,7 @@ class Horoscope:
 
     def __init__(self) -> None:
         self.horoscope_urls = self.get_horoscope_urls()
-    
+
     def get_horoscope_urls(self) -> list:
         """Get all horoscope urls
         Returns

@@ -6,7 +6,7 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 
 from chatgpt_linebot.memory import Memory
-from chatgpt_linebot.modules import Horoscope, chat_completion
+from chatgpt_linebot.modules import Horoscope, chat_completion, recommend_videos
 from chatgpt_linebot.prompts import girlfriend
 
 sys.path.append(".")
@@ -66,7 +66,7 @@ def handle_message(event) -> None:
     # Get user sent message
     user_message = event.message.text
     pre_prompt = girlfriend
-    refine_message = f"{pre_prompt}:\nuser_message"
+    refine_message = f"{pre_prompt}:\n{user_message}"
 
     if user_message.startswith('@chat 星座運勢'):
         response = horoscope.get_horoscope_response(user_message)
@@ -89,3 +89,34 @@ def handle_message(event) -> None:
     if response:
         messages = TextSendMessage(text=response)
         line_bot_api.reply_message(reply_token=reply_token, messages=messages)
+
+
+@line_app.get("/recommend")
+def recommend_from_yt() -> None:
+    """Line Bot Broadcast
+
+    Descriptions
+    ------------
+    Recommend youtube videos to all followed users.
+    (Use cron-job.org to call this api)
+
+    References
+    ----------
+    https://www.cnblogs.com/pungchur/p/14385539.html
+    https://steam.oxxostudio.tw/category/python/example/line-push-message.html
+    """
+    videos = recommend_videos()
+
+    if videos:
+        line_bot_api.broadcast(TextSendMessage(text=videos))
+        
+        # Push message to group via known group (event.source.group_id)
+        known_group_ids = [
+            'C6d-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            'Ccc-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            'Cbb-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        ]
+        for group_id in known_group_ids:
+            line_bot_api.push_message(group_id, TextSendMessage(text=videos))
+
+    return {"status": "success", "message": "recommended videos."}

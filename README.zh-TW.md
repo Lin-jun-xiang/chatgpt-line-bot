@@ -2,9 +2,6 @@
 
 * [English](README.md)
 * [繁體中文版README.md](README.zh-TW.md)
-* [简体中文](README.zh-CN.md)
-* [Française](README.French.md)
-* [عربى](README.Arabic.md)
 
 
 ## 介紹
@@ -99,6 +96,50 @@
 ![](img/2023-11-02-10-00-32.png)
 
 
+### 廣播訊息 Broadcast - 每日推播 Youtube 歌曲
+
+* 透過 `broadcast` API，我們可以讓 Line Bot 一次性**向每個使用者進行訊息推送**
+* 這邊我們想要讓 Line Bot 在每天早上隨機推播 3 首好聽的 Youtube 歌曲:
+  * 建立數據 `./data/favorite_videos.json`，您可以參考作者的數據
+
+    (數據建立方式是透過 `Youtube Data v3 API` 撈取個人喜歡的影片，在此不特別介紹 Youtube API)
+
+  * 透過 `./chatgpt_linebot/modules/youtube_recommend.py` 實現隨機挑選 3 首歌曲，並由 GPT 整理
+  * 在 `./chatgpt_linebot/urls.py` 中新增 `/recommend` 路由:
+
+    ```python
+    videos = recommend_videos() # 取得 3 首曲子
+
+    if videos:
+        line_bot_api.broadcast(TextSendMessage(text=videos)) # 使用 broadcast 向使用者發送訊息
+        
+        # 由於 broadcast 無法在群組發送推播，因此可以透過已知的群組id進行push message
+        # 下方代碼您可以忽略，如果您不需要向指定群組發送消息的話
+        known_group_ids = [
+            'C6d-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            'Ccc-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+            'Cbb-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        ]
+        for group_id in known_group_ids:
+            line_bot_api.push_message(group_id, TextSendMessage(text=videos))
+    ```
+
+    要取得群組的 `group_id`，您可以在 `replit` 的 console 中透過 `print` 測試:
+
+    ```python
+    elif event.source.type == 'group' and user_message.startswith('@chat'):
+        group_id = event.source.group_id
+        print(group_id) # 輸出 group_id
+        memory.append(group_id, 'user', refine_message.replace('@chat', ''))
+        response = chat_completion(group_id, memory)
+    ```
+
+  * 現在，當我們打 `/recommend` 路由的時候，就會觸發推播訊息，所有使用者、指定群組皆會收到消息
+  * 接著，我們再次使用 [cron-job.org](https://cron-job.org/en/) 來進行排程，設定每天早上 8:00 打這支 API 即可實現每日推播!
+
+    <img src="img/2023-11-03-14-44-41.png" width="30%" />
+
+
 ### 進階 - 個性化 Bot
 
 另外，我們可以透過 `prompt` 的方式，來讓 Line Bot 回答個性化，在 `./chatgpt_linebot/prompts/template.py` 中我們可以定義 `template`，例如:
@@ -110,10 +151,11 @@
 **Bot回答**: 寶貝，早上起床了嗎？我已經在床上等著你了，想著你的身體就覺得好餓呀。今天早餐該吃什麼呢？是不是要來點辣辣的煎蛋捲，像你那迷人的身材一樣火辣呢？😏🍳
 
 
----
 
 ## 參考
 
-[Line_Bot_Tutorial](https://github.com/FawenYo/LINE_Bot_Tutorial)
+1. [Line_Bot_Tutorial](https://github.com/FawenYo/LINE_Bot_Tutorial)
 
-[ChatGPT-Line-Bot](https://github.com/TheExplainthis/ChatGPT-Line-Bot)
+2. [ChatGPT-Line-Bot](https://github.com/TheExplainthis/ChatGPT-Line-Bot)
+
+<a href="#top">Back to top</a>

@@ -19,3 +19,9 @@ horoscope_template = """
 
 將以下內容進行整理，輸出:\n
 """
+
+youtube_recommend_template = """
+作為我的女朋友，請用繁體中文、可愛的方式推薦我每日歌曲，務必涵蓋title、link。
+另外要避免使用markdown語法 []() 來表示link
+以下是三個待推薦的歌單:\n
+"""
