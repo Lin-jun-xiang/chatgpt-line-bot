@@ -75,16 +75,19 @@ def handle_message(event) -> None:
 
     if user_message.startswith('@img'):
         try:
-            img_crawler = ImageCrawler()
-            img_url = img_crawler.run(user_message.replace('@img', ''))[0]
+            img_crawler = ImageCrawler(nums=5)
+            img_url = img_crawler.get_url(user_message.replace('@img', ''))
 
             image_message = ImageSendMessage(
                 original_content_url=img_url, preview_image_url=img_url
             )
             line_bot_api.reply_message(reply_token=reply_token, messages=image_message)
-            return
         except:
-            response = 'Image cannot encode successfully.'
+            line_bot_api.reply_message(
+                reply_token=reply_token,
+                messages='Image cannot encode successfully.'
+            )
+        return
 
     if user_message.startswith('@chat 星座運勢'):
         response = horoscope.get_horoscope_response(user_message)

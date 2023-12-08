@@ -1,5 +1,6 @@
 import os
 
+import requests
 from icrawler import ImageDownloader
 from icrawler.builtin import GoogleImageCrawler
 
@@ -44,7 +45,16 @@ class ImageCrawler:
         self.engine = engine
         self.nums = nums
 
-    def _icrawler(self, search_query: str, prefix_name: str = 'tmp') -> None:
+    def _is_img_url(self, url) -> bool:
+        """Check the image url is valid or invalid"""
+        try:
+            response = requests.head(url)
+            content_type = response.headers['content-type']
+            return content_type.startswith('image/')
+        except requests.RequestException:
+            return False
+
+    def _icrawler(self, search_query: str, prefix_name: str = 'tmp') -> list:
         """Icrawler for google search images (Free)"""
         google_crawler = GoogleImageCrawler(
             downloader_cls=CustomLinkPrinter,
@@ -67,10 +77,13 @@ class ImageCrawler:
 
         return img_urls[:self.nums]
 
-    def run(self, search_query: str) -> None:
+    def get_url(self, search_query: str) -> str:
         try:
             if self.engine == 'icrawler':
-                return self._icrawler(search_query)
+                urls = self._icrawler(search_query)
+                for url in urls:
+                    if self._is_img_url(url):
+                        return url
 
         except Exception as e:
             print(f'\033[31m{e}')
