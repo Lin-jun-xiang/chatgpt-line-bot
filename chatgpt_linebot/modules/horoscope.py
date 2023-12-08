@@ -61,7 +61,7 @@ class Horoscope:
         except Exception as e:
             print(e)
 
-    def process_horoscope_response(self, content: str) -> str:
+    def _process_horoscope_response(self, content: str) -> str:
         if not content:
             return f"{self.error_msg}\nContent is None."
         response = chat_completion(
@@ -88,6 +88,6 @@ class Horoscope:
                     return f"{self.error_msg}\nParse horoscope url failed."
 
                 content = meta_excerpt.get('content')
-                return self.process_horoscope_response(content)
+                return self._process_horoscope_response(content)
 
         return self.error_msg
