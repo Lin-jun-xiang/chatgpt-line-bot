@@ -72,6 +72,9 @@ def handle_message(event) -> None:
         response = horoscope.get_horoscope_response(user_message)
 
     elif event.source.type == 'user':
+        user_name = line_bot_api.get_profile(user_id).display_name
+        print(f'{user_name}: {user_message}')
+
         memory.append(user_id, 'user', refine_message)
         response = chat_completion(user_id, memory)
 
@@ -88,6 +91,9 @@ def handle_message(event) -> None:
     # Reply with same message
     if response:
         messages = TextSendMessage(text=response)
+        line_bot_api.reply_message(reply_token=reply_token, messages=messages)
+    else:
+        messages = TextSendMessage(text='Something wrong...')
         line_bot_api.reply_message(reply_token=reply_token, messages=messages)
 
 
@@ -119,4 +125,9 @@ def recommend_from_yt() -> None:
         for group_id in known_group_ids:
             line_bot_api.push_message(group_id, TextSendMessage(text=videos))
 
-    return {"status": "success", "message": "recommended videos."}
+        print('Successfully recommended videos')
+        return {"status": "success", "message": "recommended videos."}
+
+    else:
+        print('Failed recommended videos')
+        return {"status": "failed", "message": "no get recommended videos."}
