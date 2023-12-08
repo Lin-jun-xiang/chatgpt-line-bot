@@ -1,0 +1,76 @@
+import os
+
+from icrawler import ImageDownloader
+from icrawler.builtin import GoogleImageCrawler
+
+SERPAPI_API_KEY = os.getenv('SERPAPI_API_KEY')
+
+
+class CustomLinkPrinter(ImageDownloader):
+    """Only get image urls instead of store
+    
+    References
+    ----------
+    [Issue#73](https://github.com/hellock/icrawler/issues/73)
+    """
+    file_urls = []
+
+    def get_filename(self, task, default_ext):
+        file_idx = self.fetched_num + self.file_idx_offset
+        return '{:04d}.{}'.format(file_idx, default_ext)
+
+    def download(self, task, default_ext, timeout=5, max_retry=3, overwrite=False, **kwargs):
+        file_url = task['file_url']
+        filename = self.get_filename(task, default_ext)
+
+        task['success'] = True
+        task['filename'] = filename
+
+        if not self.signal.get('reach_max_num'):
+            self.file_urls.append(file_url)
+
+        self.fetched_num += 1
+
+        if self.reach_max_num():
+            self.signal.set(reach_max_num=True)
+
+        return
+
+
+class ImageCrawler:
+    """Crawl the Image"""
+    def __init__(self, engine: str = 'icrawler', nums: int = 1) -> None:
+        self.image_save_path = ("./")
+        self.engine = engine
+        self.nums = nums
+
+    def _icrawler(self, search_query: str, prefix_name: str = 'tmp') -> None:
+        """Icrawler for google search images (Free)"""
+        google_crawler = GoogleImageCrawler(
+            downloader_cls=CustomLinkPrinter,
+            storage={'root_dir': self.image_save_path},
+            parser_threads=4,
+            downloader_threads=4
+        )
+
+        # TODO: https://github.com/hellock/icrawler/issues/40
+        google_crawler.session.verify = False
+        google_crawler.downloader.file_urls = []
+
+        google_crawler.crawl(
+            keyword=search_query,
+            max_num=self.nums,
+            file_idx_offset=0
+        )
+        img_urls = google_crawler.downloader.file_urls
+        print(f'Get image urls: {img_urls}')
+
+        return img_urls[:self.nums]
+
+    def run(self, search_query: str) -> None:
+        try:
+            if self.engine == 'icrawler':
+                return self._icrawler(search_query)
+
+        except Exception as e:
+            print(f'\033[31m{e}')

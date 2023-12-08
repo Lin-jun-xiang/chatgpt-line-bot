@@ -4,13 +4,20 @@
 * [繁體中文版README.md](README.zh-TW.md)
 
 
-## 介紹
+## 🤖介紹
 
 在 Line 中去導入 ChatGPT Bot，只要在輸入框直接輸入文字，即可與 ChatGPT 開始互動。
 
 <img src="img/2023-10-25-10-03-47.png" width="30%" />
 
-## 工具與特色
+## ✨特色
+
+* 完全免費 ChatGPT Bot
+* 每周星座運勢資訊 (即時)
+* 定時推播 YT 音樂頻道
+* 線上搜尋圖片 (即時)
+
+## 🔨工具
 
 * `Python FastAPI`: 建立 ChatGPT 響應 API
 * `gpt4free`: **免費使用 OpenAI API**
@@ -20,7 +27,7 @@
 * `CronJob`: 免費定時發送請求，避免 API 中斷
 
 
-## 安裝步驟
+## 🎈安裝步驟
 
 ### Token 取得
 
@@ -85,18 +92,19 @@
 恭喜您完成了自己的第一個 LINE Bot！ 試著跟它說話看看吧，它會回覆你喔！
 
 
-### 特殊指令
+## 🎃特殊指令
 
 | 指令 | 說明 |
 | --- | ----- |
 | `@chat` | 在輸入框輸入 `@chat` + 訊息，就可以在 line 群組中呼叫 chatgpt |
 | `@chat 星座運勢 <星座名稱>` | 在輸入框輸入 `@chat 星座運勢 天蠍座`，就可以獲得本周天蠍座(任意星座皆可)運勢，該功能僅限用繁體中文指令 |
+| `@img <任何輸入>` | 在輸入框輸入 `@img 星座運勢 林襄抽菸`，就可以獲得線上搜尋圖片 |
 
+<img src="img/2023-11-02-10-00-32.png" width="40%"/>
 
-![](img/2023-11-02-10-00-32.png)
+<img src="img/2023-12-08-16-03-28.png" width="40%"/>
 
-
-### 廣播訊息 Broadcast - 每日推播 Youtube 歌曲
+## 📢廣播訊息 Broadcast - 每日推播 Youtube 歌曲
 
 * 透過 `broadcast` API，我們可以讓 Line Bot 一次性**向每個使用者進行訊息推送**
 * 這邊我們想要讓 Line Bot 在每天早上隨機推播 3 首好聽的 Youtube 歌曲:
@@ -140,7 +148,7 @@
     <img src="img/2023-11-03-14-44-41.png" width="30%" />
 
 
-### 進階 - 個性化 Bot
+## ⚔進階 - 個性化 Bot
 
 另外，我們可以透過 `prompt` 的方式，來讓 Line Bot 回答個性化，在 `./chatgpt_linebot/prompts/template.py` 中我們可以定義 `template`，例如:
 

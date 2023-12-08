@@ -14,6 +14,7 @@ g4f = "^0.1.7.6"
 line-bot-sdk = "^3.5.0"
 requests = "^2.31.0"
 bs4 = "^0.0.1"
+icrawler = "^0.6.7"
 
 
 [build-system]

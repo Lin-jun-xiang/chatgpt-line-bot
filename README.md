@@ -4,13 +4,21 @@
 * [Traditional Chinese README.md](README.zh-TW.md)
 
 
-## Introduction
+## 🤖Introduction
 
 Integrate ChatGPT Bot into Line, simply enter text in the input box to start interacting with ChatGPT.
 
 <img src="img/2023-10-25-10-03-47.png" width="30%" />
 
-## Tools and Features
+## ✨Features
+
+* Completely free ChatGPT Bot
+* Weekly horoscope information (real-time)
+* Scheduled push notifications for YT music channel
+* Online image search (real-time)
+
+
+## 🔨Tools
 
 * `Python FastAPI`: Build ChatGPT response API
 * `gpt4free`: **Free to use OpenAI API**
@@ -20,7 +28,7 @@ Integrate ChatGPT Bot into Line, simply enter text in the input box to start int
 * `CronJob`: Free scheduled requests to prevent API interruptions
 
 
-## Installation Steps
+## 🎈Installation Steps
 
 ### Token Acquisition
 
@@ -85,18 +93,20 @@ Homepage -> Click your bot -> Click `Add friends tool` -> Create friend action b
 Congratulations on creating your first LINE Bot! Try talking to it and see how it responds!
 
 
-### Special Commands
+## 🎃Special Commands
 
 | Command | Description |
 | --- | ----- |
 | `@chat` | Enter `@chat` + message in the input box to call chatgpt in the Line group |
 | `@chat Horoscope Fortune <Zodiac Sign>` | Enter `@chat Horoscope Fortune Scorpio` in the input box to get the weekly fortune of Scorpio (any zodiac sign can be used), this function is limited to Traditional Chinese commands |
+| `@img <any input>` | Enter `@img horoscope Lin Xiang smoking` in the input box to perform an online image search. |
+
+<img src="img/2023-11-02-10-00-32.png" width="40%"/>
+
+<img src="img/2023-12-08-16-03-28.png" width="40%"/>
 
 
-![](img/2023-11-02-10-00-32.png)
-
-
-### Broadcast Message - Daily Youtube Song Recommendation
+## 📢Broadcast Message - Daily Youtube Song Recommendation
 
 * With the `broadcast` API, we can send messages to every user at once using Line Bot
 * Here we want the Line Bot to randomly recommend 3 good Youtube songs every morning:
@@ -140,7 +150,7 @@ Congratulations on creating your first LINE Bot! Try talking to it and see how i
     <img src="img/2023-11-03-14-44-41.png" width="30%" />
 
 
-### Advanced - Personalized Bot
+## ⚔Advanced - Personalized Bot
 
 In addition, we can use the `prompt` method to allow the Line Bot to answer in a personalized way. In `./chatgpt_linebot/prompts/template.py`, we can define a `template`, for example:
 

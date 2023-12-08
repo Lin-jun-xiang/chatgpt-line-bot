@@ -6,7 +6,12 @@ from linebot.exceptions import InvalidSignatureError
 from linebot.models import *
 
 from chatgpt_linebot.memory import Memory
-from chatgpt_linebot.modules import Horoscope, chat_completion, recommend_videos
+from chatgpt_linebot.modules import (
+    Horoscope,
+    ImageCrawler,
+    chat_completion,
+    recommend_videos,
+)
 from chatgpt_linebot.prompts import girlfriend
 
 sys.path.append(".")
@@ -36,7 +41,7 @@ async def callback(request: Request) -> str:
     """
     signature = request.headers["X-Line-Signature"]
     body = await request.body()
-    
+
     # handle webhook body
     try:
         handler.handle(body.decode(), signature)
@@ -68,6 +73,19 @@ def handle_message(event) -> None:
     pre_prompt = girlfriend
     refine_message = f"{pre_prompt}:\n{user_message}"
 
+    if user_message.startswith('@img'):
+        try:
+            img_crawler = ImageCrawler()
+            img_url = img_crawler.run(user_message.replace('@img', ''))[0]
+
+            image_message = ImageSendMessage(
+                original_content_url=img_url, preview_image_url=img_url
+            )
+            line_bot_api.reply_message(reply_token=reply_token, messages=image_message)
+            return
+        except:
+            response = 'Image cannot encode successfully.'
+
     if user_message.startswith('@chat 星座運勢'):
         response = horoscope.get_horoscope_response(user_message)
 
@@ -92,9 +110,6 @@ def handle_message(event) -> None:
     if response:
         messages = TextSendMessage(text=response)
         line_bot_api.reply_message(reply_token=reply_token, messages=messages)
-    else:
-        messages = TextSendMessage(text='Something wrong...')
-        line_bot_api.reply_message(reply_token=reply_token, messages=messages)
 
 
 @line_app.get("/recommend")
@@ -115,7 +130,7 @@ def recommend_from_yt() -> None:
 
     if videos:
         line_bot_api.broadcast(TextSendMessage(text=videos))
-        
+
         # Push message to group via known group (event.source.group_id)
         known_group_ids = [
             'C6d-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
