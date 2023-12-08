@@ -12,10 +12,18 @@ Integrate ChatGPT Bot into Line, simply enter text in the input box to start int
 
 ## ✨Features
 
-* Completely free ChatGPT Bot
-* Weekly horoscope information (real-time)
-* Scheduled push notifications for YT music channel
-* Online image search (real-time)
+* **Completely free** ChatGPT Bot
+* Weekly **horoscope** information (real-time)
+  
+    <img src="img/2023-11-02-10-00-32.png" width="20%"/>
+
+* Scheduled push notifications for **YT music** channel
+  
+    <img src="img/2023-11-03-14-44-41.png" width="30%" />
+
+* **Online image search** (real-time)
+
+    <img src="img/2023-12-08-16-03-28.png" width="40%"/>
 
 
 ## 🔨Tools
@@ -101,10 +109,6 @@ Congratulations on creating your first LINE Bot! Try talking to it and see how i
 | `@chat Horoscope Fortune <Zodiac Sign>` | Enter `@chat Horoscope Fortune Scorpio` in the input box to get the weekly fortune of Scorpio (any zodiac sign can be used), this function is limited to Traditional Chinese commands |
 | `@img <any input>` | Enter `@img horoscope Lin Xiang smoking` in the input box to perform an online image search. |
 
-<img src="img/2023-11-02-10-00-32.png" width="40%"/>
-
-<img src="img/2023-12-08-16-03-28.png" width="40%"/>
-
 
 ## 📢Broadcast Message - Daily Youtube Song Recommendation
 
@@ -146,8 +150,6 @@ Congratulations on creating your first LINE Bot! Try talking to it and see how i
 
   * Now, when we access the `/recommend` route, it will trigger the message broadcast, and all users and specified groups will receive the message
   * Next, we use [cron-job.org](https://cron-job.org/en/) again for scheduling. Set it to call this API every morning at 8:00 to achieve daily push notifications!
-
-    <img src="img/2023-11-03-14-44-41.png" width="30%" />
 
 
 ## ⚔Advanced - Personalized Bot
