@@ -131,7 +131,10 @@ def recommend_from_yt() -> None:
     """
     videos = recommend_videos()
 
-    if videos:
+    if videos and videos != (
+    "There're something wrong in openai api, please try again.😱\n"
+    "Or connect to developer: https://github.com/Lin-jun-xiang/chatgpt-line-bot/issues"
+    ):
         line_bot_api.broadcast(TextSendMessage(text=videos))
 
         # Push message to group via known group (event.source.group_id)

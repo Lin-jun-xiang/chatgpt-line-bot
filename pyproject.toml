@@ -10,12 +10,12 @@ packages = [{include = "chatgpt_line_bot"}]
 python = "^3.8"
 uvicorn = "^0.23.2"
 fastapi = "^0.104.0"
-g4f = "^0.1.7.6"
+g4f = "*"
 line-bot-sdk = "^3.5.0"
 requests = "^2.31.0"
 bs4 = "^0.0.1"
 icrawler = "^0.6.7"
-
+python-dotenv = "^1.0.0"
 
 [build-system]
 requires = ["poetry-core"]

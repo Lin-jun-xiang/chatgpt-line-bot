@@ -25,6 +25,8 @@ Integrate ChatGPT Bot into Line, simply enter text in the input box to start int
 
     <img src="img/2023-12-08-16-03-28.png" width="40%"/>
 
+> [!NOTE]
+> If there're any new feature requirements, welcome to submit a PR or ISSUE
 
 ## 🔨Tools
 

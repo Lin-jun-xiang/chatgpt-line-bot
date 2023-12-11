@@ -25,6 +25,9 @@
 
     <img src="img/2023-12-08-16-03-28.png" width="40%"/>
 
+> [!NOTE]
+> 如果有任何新功能需求，歡迎提出 PR 或 ISSUE
+
 ## 🔨工具
 
 * `Python FastAPI`: 建立 ChatGPT 響應 API
