@@ -53,6 +53,8 @@ class ImageCrawler:
             return content_type.startswith('image/')
         except requests.RequestException:
             return False
+        except Exception as e:
+            return False
 
     def _icrawler(self, search_query: str, prefix_name: str = 'tmp') -> list:
         """Icrawler for google search images (Free)"""
