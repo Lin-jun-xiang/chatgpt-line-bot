@@ -77,7 +77,8 @@ def handle_message(event) -> None:
         try:
             img_crawler = ImageCrawler(nums=5)
             img_url = img_crawler.get_url(user_message.replace('@img', ''))
-
+            if not img_url:
+                raise
             image_message = ImageSendMessage(
                 original_content_url=img_url, preview_image_url=img_url
             )

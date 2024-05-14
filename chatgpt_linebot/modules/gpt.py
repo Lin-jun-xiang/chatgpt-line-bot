@@ -1,14 +1,7 @@
 from typing import Dict, List
 
-try:
-    from g4f.client import Client
-    import g4f
-
-except:
-    import subprocess
-    subprocess.run(["poetry", "add", "g4f@latest"], check=True)
-    import g4f
-    from g4f.client import Client
+import g4f
+from g4f.client import Client
 
 g4f.debug.logging = True
 
@@ -19,7 +12,8 @@ def chat_completion(message: List[Dict]) -> str:
         client = Client()
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=message
+            messages=message,
+            ignored=["Cnote"]
         )
         response = response.choices[0].message.content
 
