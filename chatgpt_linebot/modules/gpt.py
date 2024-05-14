@@ -6,9 +6,7 @@ try:
 
 except:
     import subprocess
-
     subprocess.run(["poetry", "add", "g4f@latest"], check=True)
-
     import g4f
     from g4f.client import Client
 
