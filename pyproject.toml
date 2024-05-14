@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["hs_junxiang <jimmy871117@gmail.com>"]
 readme = "README.md"
-packages = [{include = "chatgpt_line_bot"}]
+# packages = [{include = "chatgpt_line_bot"}] # replit
 
 [tool.poetry.dependencies]
 python = "^3.8"
