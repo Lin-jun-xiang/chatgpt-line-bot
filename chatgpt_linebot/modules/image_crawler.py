@@ -3,8 +3,7 @@ import os
 import requests
 from icrawler import ImageDownloader
 from icrawler.builtin import GoogleImageCrawler
-
-SERPAPI_API_KEY = os.getenv('SERPAPI_API_KEY')
+from serpapi import GoogleSearch
 
 
 class CustomLinkPrinter(ImageDownloader):
@@ -40,10 +39,16 @@ class CustomLinkPrinter(ImageDownloader):
 
 class ImageCrawler:
     """Crawl the Image"""
-    def __init__(self, engine: str = 'icrawler', nums: int = 1) -> None:
+    def __init__(
+        self,
+        engine: str = 'icrawler',
+        nums: int = 1,
+        api_key: str = None
+    ) -> None:
         self.image_save_path = ("./")
         self.engine = engine
         self.nums = nums
+        self.api_key = api_key
 
     def _is_img_url(self, url) -> bool:
         """Check the image url is valid or invalid"""
@@ -56,7 +61,26 @@ class ImageCrawler:
         except Exception as e:
             return False
 
-    def _icrawler(self, search_query: str, prefix_name: str = 'tmp') -> list:
+    def _serpapi(self, search_query: str) -> list[str]:
+        """Serpapi for google search images"""
+        params = {
+            "engine": "google",
+            "q": search_query,
+            "tbm": "isch",
+            "api_key": self.api_key
+        }
+
+        search = GoogleSearch(params)
+        results = search.get_dict()
+        images = results['images_results']
+
+        urls = []
+        for image in images[:self.nums]:
+            urls.append(image['original'])
+
+        return urls
+
+    def _icrawler(self, search_query: str, prefix_name: str = 'tmp') -> list[str]:
         """Icrawler for google search images (Free)"""
         google_crawler = GoogleImageCrawler(
             downloader_cls=CustomLinkPrinter,
@@ -83,9 +107,12 @@ class ImageCrawler:
         try:
             if self.engine == 'icrawler':
                 urls = self._icrawler(search_query)
-                for url in urls:
-                    if self._is_img_url(url):
-                        return url
+            elif self.engine == 'serpapi':
+                urls = self._serpapi(search_query, self.api_key)
+
+            for url in urls:
+                if self._is_img_url(url):
+                    return url
 
         except Exception as e:
             print(f'\033[31m{e}')

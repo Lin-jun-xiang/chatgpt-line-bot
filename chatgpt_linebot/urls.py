@@ -77,16 +77,25 @@ def handle_message(event) -> None:
         try:
             img_crawler = ImageCrawler(nums=5)
             img_url = img_crawler.get_url(user_message.replace('@img', ''))
+
             if not img_url:
-                raise
+                img_serp = ImageCrawler(
+                    engine='serpapi',
+                    nums=5,
+                    api_key=config.SERPAPI_API_KEY
+                )
+                img_url = img_serp.get_url(user_message.replace('@img', ''))
+                print('Used Serpapi search image instead of icrawler.')
+
             image_message = ImageSendMessage(
                 original_content_url=img_url, preview_image_url=img_url
             )
             line_bot_api.reply_message(reply_token=reply_token, messages=image_message)
+
         except:
             line_bot_api.reply_message(
                 reply_token=reply_token,
-                messages='Image cannot encode successfully.'
+                messages=TextSendMessage(response='Image cannot search successfully.')
             )
         return
 
