@@ -1,5 +1,3 @@
-import os
-
 import requests
 from icrawler import ImageDownloader
 from icrawler.builtin import GoogleImageCrawler
@@ -108,7 +106,7 @@ class ImageCrawler:
             if self.engine == 'icrawler':
                 urls = self._icrawler(search_query)
             elif self.engine == 'serpapi':
-                urls = self._serpapi(search_query, self.api_key)
+                urls = self._serpapi(search_query)
 
             for url in urls:
                 if self._is_img_url(url):

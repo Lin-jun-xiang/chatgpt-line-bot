@@ -95,7 +95,7 @@ def handle_message(event) -> None:
         except:
             line_bot_api.reply_message(
                 reply_token=reply_token,
-                messages=TextSendMessage(response='Image cannot search successfully.')
+                messages=TextSendMessage(text='Image cannot search successfully.')
             )
         return
 

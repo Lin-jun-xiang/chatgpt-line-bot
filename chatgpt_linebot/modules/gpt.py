@@ -13,7 +13,7 @@ def chat_completion(message: List[Dict]) -> str:
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=message,
-            ignored=["Cnote"]
+            ignored=["Cnote", "Aichatos"]
         )
         response = response.choices[0].message.content
 
