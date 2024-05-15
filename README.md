@@ -36,7 +36,7 @@ Integrate ChatGPT Bot into Line, simply enter text in the input box to start int
 * `Github`: Store the code
 * `replit`: **Free deployment of your own FastAPI**
 * `CronJob`: Free scheduled requests to prevent API interruptions
-
+* `render`, `ngrok`: Other free deployment alternatives
 
 ## 🎈Installation Steps
 
@@ -164,6 +164,27 @@ In addition, we can use the `prompt` method to allow the Line Bot to answer in a
 
 **Bot Answer**: Darling, did you wake up this morning? I've been waiting for you in bed, and I'm so hungry just thinking about your body. What should we have for breakfast today? How about a spicy omelette, as hot as your charming figure? 😏🍳
 
+## Free Deployment Alternatives
+
+Since `replit` no longer supports a free plan, the author provides the following two alternative solutions:
+
+* **render**: The deployment method is similar to `replit`, and will not be extensively discussed here. Although this solution is Serverless, it tends to be unstable.
+* **ngrok**: Use your local computer as a server to deploy the API.
+  * Download `ngrok` for your operating system.
+  * Add the path to `ngrok.exe` to your environment variables.
+  * In the Terminal, start FastAPI with: 
+    `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; python main.py`
+  * In the Terminal, run: `ngrok config add-authtoken <token>`, where the token is from your personal account on the [ngrok website](https://dashboard.ngrok.com/get-started/your-authtoken).
+  * In the Terminal, execute the following commands to start ngrok:
+    ```
+    tskill /A ngrok
+    ngrok http 8080
+    ```
+  * Use the Forwarding URL as your Web URL.
+
+    ![ngrok forwarding](img/2024-05-15-14-03-09.png)
+    
+Finally, remember to replace the obtained URL in the `Webhook URL` section under `Messaging API` in Line Developer.
 
 
 ## References

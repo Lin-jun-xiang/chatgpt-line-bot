@@ -92,11 +92,12 @@ def handle_message(event) -> None:
             )
             line_bot_api.reply_message(reply_token=reply_token, messages=image_message)
 
-        except:
+        except Exception as e:
             line_bot_api.reply_message(
                 reply_token=reply_token,
                 messages=TextSendMessage(text='Image cannot search successfully.')
             )
+            print(e)
         return
 
     if user_message.startswith('@chat 星座運勢'):

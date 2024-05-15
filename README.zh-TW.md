@@ -36,6 +36,7 @@
 * `Github`: 存放程式碼
 * `replit`: **免費部屬自己的 FastAPI**
 * `CronJob`: 免費定時發送請求，避免 API 中斷
+* `render`, `ngrok`: 其他免費部屬的替代方案
 
 
 ## 🎈安裝步驟
@@ -166,6 +167,21 @@
 **Bot回答**: 寶貝，早上起床了嗎？我已經在床上等著你了，想著你的身體就覺得好餓呀。今天早餐該吃什麼呢？是不是要來點辣辣的煎蛋捲，像你那迷人的身材一樣火辣呢？😏🍳
 
 
+## 免費部屬方案
+
+由於 `replit` 已經不支援免費方案，因此作者在此提供以下兩種替代方案:
+
+* `render`: 部屬方式與 `replit` 相近，在此不做過多介紹。該方案雖然是 Serverless ，但較為不穩定。
+* `ngrok`: 使用本地電腦作為伺服器部屬 API
+  * 下載對應作業系統的 `ngrok`
+  * 將 `ngrok.exe` 路徑添加至環境變數
+  * 在 Terminal 中啟動 FastAPI: `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; python main.py`
+  * 在 Terminal 中執行: `ngrok config add-authtoken <token>`，token 是來自 `ngrok` 官網個人帳號的 [authtoken](https://dashboard.ngrok.com/get-started/your-authtoken)
+  * 在 Terminal 中執行: `tskill /A ngrok`、`ngrok http 8080`，Forwarding 即 Web URL。
+
+    <img src="img/2024-05-15-14-03-09.png" width="60%"/>
+    
+最後記得將獲得的 URL 替換 Line Developer `Messaging API` 下方的 `Webhook URL`。([專案執行步驟2提到過](#專案執行))
 
 ## 參考
 
