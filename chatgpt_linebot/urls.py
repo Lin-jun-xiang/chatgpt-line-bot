@@ -9,7 +9,9 @@ from chatgpt_linebot.memory import Memory
 from chatgpt_linebot.modules import (
     Horoscope,
     ImageCrawler,
+    RapidAPIs,
     chat_completion,
+    g4f_generate_image,
     recommend_videos,
 )
 from chatgpt_linebot.prompts import girlfriend
@@ -50,6 +52,92 @@ async def callback(request: Request) -> str:
     return "OK"
 
 
+def handle_image_search(reply_token, query):
+    """Handles image search requests."""
+    try:
+        img_url = search_image_url(query)
+        if img_url:
+            send_image_reply(reply_token, img_url)
+        else:
+            send_text_reply(reply_token, 'Image cannot search successfully.')
+    except Exception as e:
+        send_text_reply(reply_token, f'Image search failed.\n{e}')
+
+
+def handle_image_generation(reply_token, text, generator):
+    """Handles requests to generate images using different APIs."""
+    try:
+        img_url = generate_image_url(text, generator)
+        if img_url:
+            send_image_reply(reply_token, img_url)
+        else:
+            send_text_reply(reply_token, 'Image cannot generate successfully.')
+    except Exception as e:
+        send_text_reply(reply_token, f'Image generation failed.\n{e}')
+
+
+def handle_text_reply(event, user_message, reply_token):
+    """Handles text messages and commands."""
+    response = None
+
+    if user_message.startswith('@chat 星座運勢'):
+        response = horoscope.get_horoscope_response(user_message)
+    else:
+        response = handle_chat(event, user_message)
+
+    if response:
+        send_text_reply(reply_token, response)
+
+
+def handle_chat(event, user_message):
+    """Handles chat operations and memory interactions."""
+    source_type = event.source.type
+    print(source_type)
+    source_id = getattr(event.source, f"{source_type}_id", None)
+
+    if source_type == 'user':
+        user_name = line_bot_api.get_profile(source_id).display_name
+        print(f'{user_name}: {user_message}')
+        memory.append(source_id, 'user', f"{girlfriend}:\n {user_message}")
+        return chat_completion(source_id, memory)
+
+    elif source_type in ['group', 'room']:
+        if user_message.startswith('@chat'):
+            memory.append(source_id, 'user', f"{girlfriend}:\n {user_message.replace('@chat', '')}")
+            return chat_completion(source_id, memory)
+
+
+def search_image_url(query):
+    """Fetches image URL from different search sources."""
+    img_crawler = ImageCrawler(nums=5)
+    img_url = img_crawler.get_url(query)
+    if not img_url:
+        img_serp = ImageCrawler(engine='serpapi', nums=5, api_key=config.SERPAPI_API_KEY)
+        img_url = img_serp.get_url(query)
+        print('Used Serpapi search image instead of icrawler.')
+    return img_url
+
+
+def generate_image_url(text, generator) -> str:
+    """Generates image URL using specified generator."""
+    if generator == 'g4f':
+        return g4f_generate_image(text)
+    elif generator == 'rapid':
+        return RapidAPIs(config.RAPID).ai_text_to_img(text)
+
+
+def send_image_reply(reply_token, img_url):
+    """Sends an image message to the user."""
+    image_message = ImageSendMessage(original_content_url=img_url, preview_image_url=img_url)
+    line_bot_api.reply_message(reply_token, messages=image_message)
+
+
+def send_text_reply(reply_token, text):
+    """Sends a text message to the user."""
+    text_message = TextSendMessage(text=text)
+    line_bot_api.reply_message(reply_token, messages=text_message)
+
+
 @handler.add(MessageEvent, message=(TextMessage))
 def handle_message(event) -> None:
     """Event - User sent message
@@ -65,65 +153,16 @@ def handle_message(event) -> None:
         return
 
     reply_token = event.reply_token
-    user_id = event.source.user_id
-    response = None
-
-    # Get user sent message
     user_message = event.message.text
-    pre_prompt = girlfriend
-    refine_message = f"{pre_prompt}:\n{user_message}"
 
     if user_message.startswith('@img'):
-        try:
-            img_crawler = ImageCrawler(nums=5)
-            img_url = img_crawler.get_url(user_message.replace('@img', ''))
-
-            if not img_url:
-                img_serp = ImageCrawler(
-                    engine='serpapi',
-                    nums=5,
-                    api_key=config.SERPAPI_API_KEY
-                )
-                img_url = img_serp.get_url(user_message.replace('@img', ''))
-                print('Used Serpapi search image instead of icrawler.')
-
-            image_message = ImageSendMessage(
-                original_content_url=img_url, preview_image_url=img_url
-            )
-            line_bot_api.reply_message(reply_token=reply_token, messages=image_message)
-
-        except Exception as e:
-            line_bot_api.reply_message(
-                reply_token=reply_token,
-                messages=TextSendMessage(text='Image cannot search successfully.')
-            )
-            print(e)
-        return
-
-    if user_message.startswith('@chat 星座運勢'):
-        response = horoscope.get_horoscope_response(user_message)
-
-    elif event.source.type == 'user':
-        user_name = line_bot_api.get_profile(user_id).display_name
-        print(f'{user_name}: {user_message}')
-
-        memory.append(user_id, 'user', refine_message)
-        response = chat_completion(user_id, memory)
-
-    elif event.source.type == 'group' and user_message.startswith('@chat'):
-        group_id = event.source.group_id
-        memory.append(group_id, 'user', refine_message.replace('@chat', ''))
-        response = chat_completion(group_id, memory)
-
-    elif event.source.type == 'room' and user_message.startswith('@chat'):
-        room_id = event.source.room_id
-        memory.append(room_id, 'user', refine_message.replace('@chat', ''))
-        response = chat_completion(room_id, memory)
-
-    # Reply with same message
-    if response:
-        messages = TextSendMessage(text=response)
-        line_bot_api.reply_message(reply_token=reply_token, messages=messages)
+        handle_image_search(reply_token, user_message.replace('@img', ''))
+    elif user_message.startswith('@ai_img_g4f'):
+        handle_image_generation(reply_token, user_message.replace('@ai_img_g4f', ''), generator='g4f')
+    elif user_message.startswith('@ai_img_rapid'):
+        handle_image_generation(reply_token, user_message.replace('@ai_img_rapid', ''), generator='rapid')
+    else:
+        handle_text_reply(event, user_message, reply_token)
 
 
 @line_app.get("/recommend")

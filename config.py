@@ -11,3 +11,6 @@ LINE_CHANNEL_ACCESS_TOKEN = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN")
 
 # SerpAPI
 SERPAPI_API_KEY = os.environ.get('SERPAPI_API_KEY')
+
+# OthersAPI
+RAPID = os.environ.get('RAPID')
