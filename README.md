@@ -23,7 +23,7 @@ Integrate ChatGPT Bot into Line, simply enter text in the input box to start int
 
 * **Online image search** (real-time)
 
-    <img src="img/2023-12-08-16-03-28.png" width="40%"/>
+    <img src="img/2024-05-17-15-08-12.png" width="40%"/>
 
 > [!NOTE]
 > If there're any new feature requirements, welcome to submit a PR or ISSUE
@@ -102,14 +102,27 @@ Homepage -> Click your bot -> Click `Add friends tool` -> Create friend action b
 
 Congratulations on creating your first LINE Bot! Try talking to it and see how it responds!
 
+## ⛄ Group and Non-Group
 
-## 🎃Special Commands
+* When chatting with the bot individually, any message will trigger a response.
+* In a group, to interact with the bot, you need to use the `@chat` command at the beginning of your message. For example: `@chat hi~`
 
-| Command | Description |
-| --- | ----- |
-| `@chat` | Enter `@chat` + message in the input box to call chatgpt in the Line group |
-| `@chat Horoscope Fortune <Zodiac Sign>` | Enter `@chat Horoscope Fortune Scorpio` in the input box to get the weekly fortune of Scorpio (any zodiac sign can be used), this function is limited to Traditional Chinese commands |
-| `@img <any input>` | Enter `@img horoscope Lin Xiang smoking` in the input box to perform an online image search. |
+
+## 🎃 Special Features
+
+### Horoscope
+
+When your message includes a request for horoscope information, it triggers a web crawler to fetch the weekly horoscope:
+
+* Personal chat: `Give me the Scorpio horoscope`, `I want to know the Scorpio horoscope`, ...
+* Group chat: `@chat Give me the Scorpio horoscope`, `@chat I want to know the Scorpio horoscope`, ...
+
+### Online Image Search
+
+When your message includes a request to search for images, it triggers a web crawler to fetch the desired image:
+
+* Personal chat: `Search online for a picture of Lin Xiang smoking`, `Find me a picture of Lin Xiang smoking online`, ...
+* Group chat: `@chat Search online for a picture of Lin Xiang smoking`, `@chat Find me a picture of Lin Xiang smoking online`, ...
 
 
 ## 📢Broadcast Message - Daily Youtube Song Recommendation

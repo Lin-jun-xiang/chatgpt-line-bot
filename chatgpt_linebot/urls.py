@@ -1,4 +1,5 @@
 import sys
+from urllib.parse import urlparse
 
 from fastapi import APIRouter, HTTPException, Request
 from linebot import LineBotApi, WebhookHandler
@@ -10,11 +11,12 @@ from chatgpt_linebot.modules import (
     Horoscope,
     ImageCrawler,
     RapidAPIs,
+    chat,
     chat_completion,
     g4f_generate_image,
     recommend_videos,
 )
-from chatgpt_linebot.prompts import girlfriend
+from chatgpt_linebot.prompts import agent_template, girlfriend
 
 sys.path.append(".")
 
@@ -23,6 +25,7 @@ import config
 line_app = APIRouter()
 memory = Memory(3)
 horoscope = Horoscope()
+rapidapis = RapidAPIs(config.RAPID)
 
 line_bot_api = LineBotApi(config.LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(config.LINE_CHANNEL_SECRET)
@@ -52,62 +55,33 @@ async def callback(request: Request) -> str:
     return "OK"
 
 
-def handle_image_search(reply_token, query):
-    """Handles image search requests."""
+def is_url(string: str) -> bool:
     try:
-        img_url = search_image_url(query)
-        if img_url:
-            send_image_reply(reply_token, img_url)
-        else:
-            send_text_reply(reply_token, 'Image cannot search successfully.')
-    except Exception as e:
-        send_text_reply(reply_token, f'Image search failed.\n{e}')
+        result = urlparse(string)
+        return all([result.scheme, result.netloc])
+    except ValueError:
+        return False
 
 
-def handle_image_generation(reply_token, text, generator):
-    """Handles requests to generate images using different APIs."""
-    try:
-        img_url = generate_image_url(text, generator)
-        if img_url:
-            send_image_reply(reply_token, img_url)
-        else:
-            send_text_reply(reply_token, 'Image cannot generate successfully.')
-    except Exception as e:
-        send_text_reply(reply_token, f'Image generation failed.\n{e}')
+def agent(query: str) -> tuple[str]:
+    """Auto use correct tool by user query."""
+    prompt = agent_template + query
+    message = [{'role': 'user', 'content': prompt}]
+
+    tool, input = chat(message).split(', ')
+
+    print(f"""
+    Agent
+    =========================================
+    Query: {query}
+    Tool: {tool}
+    Input: {input}
+    """)
+
+    return tool, input
 
 
-def handle_text_reply(event, user_message, reply_token):
-    """Handles text messages and commands."""
-    response = None
-
-    if user_message.startswith('@chat 星座運勢'):
-        response = horoscope.get_horoscope_response(user_message)
-    else:
-        response = handle_chat(event, user_message)
-
-    if response:
-        send_text_reply(reply_token, response)
-
-
-def handle_chat(event, user_message):
-    """Handles chat operations and memory interactions."""
-    source_type = event.source.type
-    print(source_type)
-    source_id = getattr(event.source, f"{source_type}_id", None)
-
-    if source_type == 'user':
-        user_name = line_bot_api.get_profile(source_id).display_name
-        print(f'{user_name}: {user_message}')
-        memory.append(source_id, 'user', f"{girlfriend}:\n {user_message}")
-        return chat_completion(source_id, memory)
-
-    elif source_type in ['group', 'room']:
-        if user_message.startswith('@chat'):
-            memory.append(source_id, 'user', f"{girlfriend}:\n {user_message.replace('@chat', '')}")
-            return chat_completion(source_id, memory)
-
-
-def search_image_url(query):
+def search_image_url(query: str) -> str:
     """Fetches image URL from different search sources."""
     img_crawler = ImageCrawler(nums=5)
     img_url = img_crawler.get_url(query)
@@ -118,22 +92,18 @@ def search_image_url(query):
     return img_url
 
 
-def generate_image_url(text, generator) -> str:
-    """Generates image URL using specified generator."""
-    if generator == 'g4f':
-        return g4f_generate_image(text)
-    elif generator == 'rapid':
-        return RapidAPIs(config.RAPID).ai_text_to_img(text)
-
-
-def send_image_reply(reply_token, img_url):
+def send_image_reply(reply_token, img_url: str) -> None:
     """Sends an image message to the user."""
+    if not img_url:
+        send_text_reply(reply_token, 'Cannot get image.')
     image_message = ImageSendMessage(original_content_url=img_url, preview_image_url=img_url)
     line_bot_api.reply_message(reply_token, messages=image_message)
 
 
-def send_text_reply(reply_token, text):
+def send_text_reply(reply_token, text: str) -> None:
     """Sends a text message to the user."""
+    if not text:
+        text = "There're some problem in server."
     text_message = TextSendMessage(text=text)
     line_bot_api.reply_message(reply_token, messages=text_message)
 
@@ -155,14 +125,38 @@ def handle_message(event) -> None:
     reply_token = event.reply_token
     user_message = event.message.text
 
-    if user_message.startswith('@img'):
-        handle_image_search(reply_token, user_message.replace('@img', ''))
-    elif user_message.startswith('@ai_img_g4f'):
-        handle_image_generation(reply_token, user_message.replace('@ai_img_g4f', ''), generator='g4f')
-    elif user_message.startswith('@ai_img_rapid'):
-        handle_image_generation(reply_token, user_message.replace('@ai_img_rapid', ''), generator='rapid')
+    source_type = event.source.type
+    source_id = getattr(event.source, f"{source_type}_id", None)
+
+    if source_type == 'user':
+        user_name = line_bot_api.get_profile(source_id).display_name
+        print(f'{user_name}: {user_message}')
+
     else:
-        handle_text_reply(event, user_message, reply_token)
+        if not user_message.startswith('@chat'):
+            return
+        else:
+            user_message = user_message.replace('@chat', '')
+
+    tool, input_query = agent(user_message)
+
+    if tool in ['chat_completion']:
+        input_query = f"{girlfriend}:\n {input_query}"
+        memory.append(source_id, 'user', f"{girlfriend}:\n {user_message}")
+
+    try:
+        if tool in ['chat_completion']:
+            response = chat_completion(source_id, memory)
+        else:
+            response = eval(f"{tool}('{input_query}')")
+
+        if is_url(response):
+            send_image_reply(reply_token, response)
+        else:
+            send_text_reply(reply_token, response)
+
+    except Exception as e:
+        send_text_reply(reply_token, e)
 
 
 @line_app.get("/recommend")
@@ -199,3 +193,4 @@ def recommend_from_yt() -> None:
     else:
         print('Failed recommended videos')
         return {"status": "failed", "message": "no get recommended videos."}
+    
