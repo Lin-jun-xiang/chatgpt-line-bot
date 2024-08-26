@@ -185,8 +185,11 @@ Since `replit` no longer supports a free plan, the author provides the following
 * **ngrok**: Use your local computer as a server to deploy the API.
   * Download `ngrok` for your operating system.
   * Add the path to `ngrok.exe` to your environment variables.
-  * In the Terminal, start FastAPI with: 
-    `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; python main.py`
+  * In the Terminal, start FastAPI with:
+    `pip install poetry`
+    `poetry shell`
+    `poetry install`
+    `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; poetry run python main.py`
   * In the Terminal, run: `ngrok config add-authtoken <token>`, where the token is from your personal account on the [ngrok website](https://dashboard.ngrok.com/get-started/your-authtoken).
   * In the Terminal, execute the following commands to start ngrok:
     ```
