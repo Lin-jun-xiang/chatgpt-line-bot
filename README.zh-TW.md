@@ -69,7 +69,7 @@
 * `ngrok`: 使用本地電腦(或者google notebook)作為伺服器部屬 API
   * 下載對應作業系統的 `ngrok`
   * 將 `ngrok.exe` 路徑添加至環境變數
-  * 在 Terminal 中啟動 FastAPI: `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_AOI_KEY="..."; python main.py`
+  * 在 Terminal 中啟動 FastAPI: `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_API_KEY="..."; python main.py`
     * `GPT_METHOD`: 可使用 `g4f` 或者 `zhipuai`
     * `GPT_API_KEY`: 若使用 `zhipuai` GPT METHOD，請務必提供自己申請的金鑰
   * 在 Terminal 中執行: `ngrok config add-authtoken <token>`，token 是來自 `ngrok` 官網個人帳號的 [authtoken](https://dashboard.ngrok.com/get-started/your-authtoken)

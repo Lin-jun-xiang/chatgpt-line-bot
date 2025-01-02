@@ -21,6 +21,7 @@ Integrate ChatGPT Bot into Line. Simply input text into the input box to start i
     <img src="img/2023-11-03-14-44-41.png" width="30%" />
 
 * **Online image search** (real-time)
+
     <img src="img/2024-05-17-15-08-12.png" width="40%"/>
 
 > [!NOTE]
@@ -69,7 +70,7 @@ Since `g4f` relies on reverse engineering to call OpenAI's API, it can be unstab
 * `ngrok`: Use a local computer (or Google Colab) as a server to deploy the API
   * Download the appropriate version of `ngrok` for your OS
   * Add the `ngrok.exe` path to your system's environment variables
-  * Launch FastAPI in the terminal: `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_AOI_KEY="..."; python main.py`
+  * Launch FastAPI in the terminal: `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_API_KEY="..."; python main.py`
     * `GPT_METHOD`: Choose `g4f` or `zhipuai`
     * `GPT_API_KEY`: If using the `zhipuai` method, provide your API key
   * Run: `ngrok config add-authtoken <token>`. Obtain the token from your personal [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken).
