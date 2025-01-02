@@ -68,7 +68,7 @@ def agent(query: str) -> tuple[str]:
     prompt = agent_template + query
     message = [{'role': 'user', 'content': prompt}]
 
-    tool, input = chat(message).split(', ')
+    tool, input = chat(message, config.GPT_METHOD, config.GPT_API_KEY).split(', ')
 
     print(f"""
     Agent
@@ -146,7 +146,7 @@ def handle_message(event) -> None:
 
     try:
         if tool in ['chat_completion']:
-            response = chat_completion(source_id, memory)
+            response = chat_completion(source_id, memory, config.GPT_METHOD, config.GPT_API_KEY)
         else:
             response = eval(f"{tool}('{input_query}')")
 

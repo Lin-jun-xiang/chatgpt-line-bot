@@ -2,20 +2,29 @@ from typing import Dict, List
 
 import g4f
 from g4f.client import Client
+from zhipuai import ZhipuAI
 
 g4f.debug.logging = True
 
 
-def chat_completion(message: List[Dict]) -> str:
+def chat_completion(message: List[Dict], method: str = 'g4f', api_key: str = None) -> str:
     """Use OpenAI API via gpt4free providers"""
     try:
-        client = Client()
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=message,
-            ignored=["Cnote", "Aichatos"]
-        )
-        response = response.choices[0].message.content
+        if method == 'g4f':
+            client = Client()
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=message,
+                ignored=["Cnote", "Aichatos"]
+            )
+            response = response.choices[0].message.content
+        elif method == 'zhipuai':
+            client = ZhipuAI(api_key=api_key)
+            response = client.chat.completions.create(
+                model="glm-4-plus",
+                messages=message,
+            )
+            return response.choices[0].message.content
 
     except Exception as e:
         response = (

@@ -31,12 +31,18 @@
 
 * `Python FastAPI`: 建立 ChatGPT 響應 API
 * `gpt4free`: **免費使用 OpenAI API**
+* `zhipuai`: **免費使用 GPT API**
 * `Line messaging API channel`: 串接 ChatGPT API
 * `Github`: 存放程式碼
-* `replit`: **免費部屬自己的 FastAPI**
-* `CronJob`: 免費定時發送請求，避免 API 中斷
-* `render`, `ngrok`: 其他免費部屬的替代方案
+* `replit/render/ngrok`: **免費部屬自己的 FastAPI**
+* `CronJob`: 免費定時發送請求，可用作定時推播訊息
 
+## 🧠免費 GPT 選擇
+由於 `g4f` 是使用逆向工程方式調用 OpenAI API，經常有不穩定的情況，因此作者找到一個替代方案，使用**智譜AI**開放平台提供的免費 GPT API。
+
+* `g4f`: 透過逆向工程調用 OpenAI API
+* `zhipuai`: **智譜AI** 開放平台提供的免費 GPT API，直接前往[官方](https://open.bigmodel.cn/dev/howuse/glm-4)註冊帳號，無須任何信用卡、費用，並於[個人中心](https://open.bigmodel.cn/usercenter/proj-mgmt/apikeys)添加一個 API KEY，如下圖。使用該 GPT 方案，需要在環境變數設定 API KEY。
+    ![](static/images/2025-01-02-10-18-10.png)
 
 ## 🎈安裝步驟
 
@@ -51,48 +57,26 @@
         4. 輸入完成後，在 `Basic Settings` 下方，有一個 `Channel Secret` -> 按下 `Issue`，生成後即為 `LINE_CHANNEL_SECRET` （稍晚會用到）
         5. 在 `Messaging API` 下方，有一個 `Channel access token` -> 按下 `Issue`，生成後即為 `LINE_CHANNEL_ACCESS_TOKEN` （稍晚會用到）
 
-### 專案設置
+### 專案設置與執行
 1. Fork Github 專案：
     1. 註冊/登入 [GitHub](https://github.com/)
     2. 進入 [ChatGPT-Line-Bot](https://github.com/Lin-jun-xiang/ChatGPT-Line-Bot)
     3. 點選 `Star` 支持開發者
     4. 點選 `Fork` 複製全部的程式碼到自己的倉庫
-2. 部署（免費空間）：
-    1. 進入 [replit](https://replit.com/)
-    2. 點選 `Sign Up` 直接用 `Github` 帳號登入並授權 -> 按下 `Skip` 跳過初始化設定
-    3. 進入後中間主頁的部分點選 `Create` -> 跳出框，點選右上角 `Import from Github`
-    4. 若尚未加入 Github 倉庫，則點選連結 `Connect GitHub to import your private repos.` -> 勾選 `Only select repositories` -> 選擇 `ChatGPT-Line-Bot`
-    5. 回到第四步，此時 `Github URL` 可以選擇 `ChatGPT-Line-Bot` 專案 -> 點擊 `Import from Github`。
+2. 部署：
 
-### 專案執行
-1. 環境變數設定
-    1. 接續上一步 `Import` 完成後在 `Replit` 的專案管理頁面左下方 `Tools` 點擊 `Secrets`。
-    2. 右方按下 `Got it` 後，即可新增環境變數，需新增：
-        1. Line Channel Secret:
-            - key: `LINE_CHANNEL_SECRET`
-            - value: `[由步驟一取得]`
-        2. Line Channel Access Token:
-            - key: `LINE_CHANNEL_ACCESS_TOKEN`
-            - value: `[由步驟一取得]`
+* `ngrok`: 使用本地電腦(或者google notebook)作為伺服器部屬 API
+  * 下載對應作業系統的 `ngrok`
+  * 將 `ngrok.exe` 路徑添加至環境變數
+  * 在 Terminal 中啟動 FastAPI: `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_AOI_KEY="..."; python main.py`
+    * `GPT_METHOD`: 可使用 `g4f` 或者 `zhipuai`
+    * `GPT_API_KEY`: 若使用 `zhipuai` GPT METHOD，請務必提供自己申請的金鑰
+  * 在 Terminal 中執行: `ngrok config add-authtoken <token>`，token 是來自 `ngrok` 官網個人帳號的 [authtoken](https://dashboard.ngrok.com/get-started/your-authtoken)
+  * 在 Terminal 中執行: `tskill /A ngrok`、`ngrok http 8080`，Forwarding 即 Web URL。
 
-        <img src="img/2023-10-25-10-00-59.png" width="60%"/>
+    <img src="img/2024-05-15-14-03-09.png" width="60%"/>
 
-2. 開始執行
-    1. 點擊上方的 `Run`
-    2. 成功後右邊畫面會顯示 `Hello World`，並將畫面中上方的**網址複製**下來
-    3. 回到 Line Developer，在 `Messaging API` 下方的 `Webhook URL` 將上方網址貼過來，並加上 `/callback` 例如：`https://ChatGPT-Line-Bot.jimmylin.repl.co/callback`
-    4. 打開下方的 `Use webhook`
-    5. 將下方 `Auto-reply messages` 關閉
-    - 注意：若一小時內沒有任何請求，則程式會中斷，因此需要下步驟
-
-        <img src="img/2023-10-25-10-01-21.png" width="60%"/>
-
-3. CronJob 定時發送請求
-    1. 註冊/登入 [cron-job.org](https://cron-job.org/en/)
-    2. 進入後面板右上方選擇 `CREATE CRONJOB`
-    3. `Title` 輸入 `ChatGPT-Line-Bot`，網址輸入上一步驟的網址，例如：`https://ChatGPT-Line-Bot.jimmylin.repl.co/`
-    4. 下方則每 `5 分鐘` 打一次
-    5. 按下 `CREATE`
+最後記得將獲得的 URL 替換 Line Developer `Messaging API` 下方的 `Webhook URL`。([專案執行步驟2提到過](#專案執行))
 
 ### 連結服務與 Line Bot
 
@@ -164,7 +148,12 @@
     ```
 
   * 現在，當我們打 `/recommend` 路由的時候，就會觸發推播訊息，所有使用者、指定群組皆會收到消息
-  * 接著，我們再次使用 [cron-job.org](https://cron-job.org/en/) 來進行排程，設定每天早上 8:00 打這支 API 即可實現每日推播!
+  * 接著，我們使用 [cron-job.org](https://cron-job.org/en/) 來進行排程，設定每天早上 8:00 打這支 API 即可實現每日推播!
+    1. 註冊/登入 [cron-job.org](https://cron-job.org/en/)
+    2. 進入後面板右上方選擇 `CREATE CRONJOB`
+    3. `Title` 輸入 `ChatGPT-Line-Bot`，網址輸入上一步驟的網址，例如：`https://ChatGPT-Line-Bot.jimmylin.repl.co/`
+    4. 下方則每 `5 分鐘` 打一次
+    5. 按下 `CREATE`
 
 
 
@@ -181,19 +170,7 @@
 
 ## 免費部屬方案
 
-由於 `replit` 已經不支援免費方案，因此作者在此提供以下兩種替代方案:
 
-* `render`: 部屬方式與 `replit` 相近，在此不做過多介紹。該方案雖然是 Serverless ，但較為不穩定。
-* `ngrok`: 使用本地電腦作為伺服器部屬 API
-  * 下載對應作業系統的 `ngrok`
-  * 將 `ngrok.exe` 路徑添加至環境變數
-  * 在 Terminal 中啟動 FastAPI: `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; python main.py`
-  * 在 Terminal 中執行: `ngrok config add-authtoken <token>`，token 是來自 `ngrok` 官網個人帳號的 [authtoken](https://dashboard.ngrok.com/get-started/your-authtoken)
-  * 在 Terminal 中執行: `tskill /A ngrok`、`ngrok http 8080`，Forwarding 即 Web URL。
-
-    <img src="img/2024-05-15-14-03-09.png" width="60%"/>
-    
-最後記得將獲得的 URL 替換 Line Developer `Messaging API` 下方的 `Webhook URL`。([專案執行步驟2提到過](#專案執行))
 
 ## 參考
 

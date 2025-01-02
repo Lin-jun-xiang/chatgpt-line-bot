@@ -1,1 +1,1 @@
-from chatgpt_linebot.urls3 import line_app
+from chatgpt_linebot.urls import line_app
