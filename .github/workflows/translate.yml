@@ -3,7 +3,7 @@ name: Translate Readme
 
 on:
     push:
-        branches: ['test']
+        branches: ['**']
 
 jobs:
     translate:
@@ -18,5 +18,5 @@ jobs:
               uses: Lin-jun-xiang/action-translate-readme@v2 # Based on the tag
               with:
                 token: ${{ secrets.Action_Bot }} # Based on step2 name
-                g4f_provider: g4f.Provider.DeepAi # You can change this provider
-                langs: "en,zh-TW" # You can define any langs
+                zhipuai: ${{ secrets.zhipuai_api_key }} # Optional: Based on step3
+                langs: "en,zh-TW,zh-CN,French" # You can define any langs
