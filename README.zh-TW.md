@@ -2,133 +2,133 @@
 
 * [English](README.md)
 * [繁體中文版README.md](README.zh-TW.md)
+* [简体中文](README.zh-CN.md)
+* [Française](README.French.md)
 
+## 🤖 簡介
 
-## 🤖介紹
-
-在 Line 中去導入 ChatGPT Bot，只要在輸入框直接輸入文字，即可與 ChatGPT 開始互動。
+將 ChatGPT Bot 整合到 Line。只需在輸入框中輸入文字，即可開始與 ChatGPT 互動。
 
 <img src="img/2023-10-25-10-03-47.png" width="30%" />
 
-## ✨特色
+## ✨ 功能
 
-* **完全免費** ChatGPT Bot
-* 每周**星座運勢**資訊 (即時)
+* **完全免費** 的 ChatGPT Bot
+* 每週 **星座資訊**（即時）
 
     <img src="img/2023-11-02-10-00-32.png" width="20%"/>
 
-* 定時推播 **YT 音樂**頻道
+* **YouTube 音樂** 頻道的定時推播
 
     <img src="img/2023-11-03-14-44-41.png" width="30%" />
 
-* **線上搜尋圖片** (即時)
+* **在線圖片搜尋**（即時）
 
     <img src="img/2024-05-17-15-08-12.png" width="40%"/>
 
 > [!NOTE]
-> 如果有任何新功能需求，歡迎提出 PR 或 ISSUE
+> 如果你有任何功能請求，請隨時提交 PR 或 ISSUE。
 
-## 🔨工具
+## 🔨 工具
 
-* `Python FastAPI`: 建立 ChatGPT 響應 API
-* `gpt4free`: **免費使用 OpenAI API**
-* `zhipuai`: **免費使用 GPT API**
-* `Line messaging API channel`: 串接 ChatGPT API
-* `Github`: 存放程式碼
-* `replit/render/ngrok`: **免費部屬自己的 FastAPI**
-* `CronJob`: 免費定時發送請求，可用作定時推播訊息
+* `Python FastAPI`：創建 ChatGPT 回應 API
+* `gpt4free`：**免費使用 OpenAI API**
+* `zhipuai`：**免費使用 GPT API**
+* `Line messaging API channel`：連接 ChatGPT API
+* `GitHub`：代碼存儲庫
+* `replit/render/ngrok`：**免費部署你自己的 FastAPI**
+* `CronJob`：免費發送定時請求，實現定時推播消息
 
-## 🧠免費 GPT 選擇
-由於 `g4f` 是使用逆向工程方式調用 OpenAI API，經常有不穩定的情況，因此作者找到一個替代方案，使用**智譜AI**開放平台提供的免費 GPT API。
+## 🧠 免費 GPT 選項
 
-* `g4f`: 透過逆向工程調用 OpenAI API
-* `zhipuai`: **智譜AI** 開放平台提供的免費 GPT API，直接前往[官方](https://open.bigmodel.cn/dev/howuse/glm-4)註冊帳號，無須任何信用卡、費用，並於[個人中心](https://open.bigmodel.cn/usercenter/proj-mgmt/apikeys)添加一個 API KEY，如下圖。使用該 GPT 方案，需要在環境變數設定 API KEY。
+由於 `g4f` 依賴於逆向工程來調用 OpenAI 的 API，可能會不穩定。因此，作者建議使用 **Zhipu AI** 開放平台作為免費 GPT API 的替代方案。
+
+* `g4f`：使用逆向工程調用 OpenAI API
+* `zhipuai`：**Zhipu AI** 開放平台提供免費 GPT API。訪問 [官方網站](https://open.bigmodel.cn/dev/howuse/glm-4) 註冊帳戶，無需信用卡或費用。在 [個人中心](https://open.bigmodel.cn/usercenter/proj-mgmt/apikeys) 添加 API 金鑰，如下所示。將此 API 金鑰設置在環境變量中使用此 GPT 選項。
     ![](static/images/2025-01-02-10-18-10.png)
 
-## 🎈安裝步驟
+## 🎈 安裝步驟
 
-### Token 取得
+### 獲取 Tokens
 
-1. 取得 Line Token：
-    1. 登入 [Line Developer](https://developers.line.biz/zh-hant/)
-    2. 創建機器人：
-        1. 創建 `Provider` -> 按下 `Create`
-        2. 創建 `Channel` -> 選擇 `Create a Messaging API channel`
-        3. 輸入完必填的基本資料
-        4. 輸入完成後，在 `Basic Settings` 下方，有一個 `Channel Secret` -> 按下 `Issue`，生成後即為 `LINE_CHANNEL_SECRET` （稍晚會用到）
-        5. 在 `Messaging API` 下方，有一個 `Channel access token` -> 按下 `Issue`，生成後即為 `LINE_CHANNEL_ACCESS_TOKEN` （稍晚會用到）
+1. 獲取 Line Tokens：
+    1. 登錄 [Line Developer](https://developers.line.biz/en/)
+    2. 創建一個 bot：
+        1. 創建一個 `Provider` -> 點擊 `Create`
+        2. 創建一個 `Channel` -> 選擇 `Create a Messaging API channel`
+        3. 填寫所需的基本信息
+        4. 完成後，進入 `Basic Settings` -> 在 `Channel Secret` 下，點擊 `Issue` 生成 `LINE_CHANNEL_SECRET`（後面會用到）。
+        5. 在 `Messaging API` 下，點擊 `Issue` 生成 `Channel access token`（後面會用到）。
 
 ### 專案設置與執行
-1. Fork Github 專案：
-    1. 註冊/登入 [GitHub](https://github.com/)
-    2. 進入 [ChatGPT-Line-Bot](https://github.com/Lin-jun-xiang/ChatGPT-Line-Bot)
-    3. 點選 `Star` 支持開發者
-    4. 點選 `Fork` 複製全部的程式碼到自己的倉庫
+
+1. Fork GitHub 專案：
+    1. 註冊/登錄 [GitHub](https://github.com/)
+    2. 前往 [ChatGPT-Line-Bot](https://github.com/Lin-jun-xiang/ChatGPT-Line-Bot)
+    3. 點擊 `Star` 支持開發者
+    4. 點擊 `Fork` 將所有代碼複製到你的存儲庫
 2. 部署：
 
-* `ngrok`: 使用本地電腦(或者google notebook)作為伺服器部屬 API
-  * 下載對應作業系統的 `ngrok`
-  * 將 `ngrok.exe` 路徑添加至環境變數
-  * 在 Terminal 中啟動 FastAPI: `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_API_KEY="..."; python main.py`
-    * `GPT_METHOD`: 可使用 `g4f` 或者 `zhipuai`
-    * `GPT_API_KEY`: 若使用 `zhipuai` GPT METHOD，請務必提供自己申請的金鑰
-  * 在 Terminal 中執行: `ngrok config add-authtoken <token>`，token 是來自 `ngrok` 官網個人帳號的 [authtoken](https://dashboard.ngrok.com/get-started/your-authtoken)
-  * 在 Terminal 中執行: `tskill /A ngrok`、`ngrok http 8080`，Forwarding 即 Web URL。
+* `ngrok`：使用本地電腦（或 Google Colab）作為服務器來部署 API
+  * 下載適合你操作系統的 `ngrok` 版本
+  * 將 `ngrok.exe` 路徑添加到系統的環境變量中
+  * 在終端啟動 FastAPI：`$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_API_KEY="..."; python main.py`
+    * `GPT_METHOD`：選擇 `g4f` 或 `zhipuai`
+    * `GPT_API_KEY`：如果使用 `zhipuai` 方法，提供你的 API 金鑰
+  * 執行：`ngrok config add-authtoken <token>`。從你的個人 [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken) 獲取 token。
+  * 執行：`ngrok http 8080`。轉發 URL 將作為 webhook URL。
 
     <img src="img/2024-05-15-14-03-09.png" width="60%"/>
 
-最後記得將獲得的 URL 替換 Line Developer `Messaging API` 下方的 `Webhook URL`。([專案執行步驟2提到過](#專案執行))
+最後，替換 Line Developer 控制台 `Messaging API` 區域中的 webhook URL。（[見專案設置步驟 2](#project-setup-and-execution)）
 
-### 連結服務與 Line Bot
+### 連接服務與 Line Bot
 
-返回 [Line Developer](https://manager.line.biz/account) 首頁並點擊 `加入好友指南` 後掃碼加入 LINE Bot:
+回到 [Line Developer 首頁](https://manager.line.biz/account)，點擊 `Add Friend Guide`，掃描 QR 碼將 Line Bot 添加為好友。
 
-主頁 -> 點選你的 bot -> 點選增加好友工具 -> 建立好友行動條碼 (https://manager.line.biz/account/<yourBotId>/gainfriends)
+首頁 -> 選擇你的 bot -> 添加好友工具 -> 創建好友動作條碼（https://manager.line.biz/account/<yourBotId>/gainfriends）
 
-恭喜您完成了自己的第一個 LINE Bot！ 試著跟它說話看看吧，它會回覆你喔！
+恭喜！你已創建了你的第一個 Line Bot。試著與它交談——它會回覆你！
 
-## ⛄群組與非群組
+## ⛄ 群組對話 vs. 個人對話
 
-* 與 bot 單獨對話時，任何訊息皆會觸發響應
-* 在群組中，若要與 bot 對話，需要使用指令 `@chat` 作為開頭，例如: `@chat hi~`
+* 在一對一對話中，任何消息都會觸發回應。
+* 在群組對話中，使用 `@chat` 前綴與機器人互動，例如，`@chat hi~`。
 
-## 🎃特殊功能
+## 🎃 特殊功能
 
-### 星座運勢
+### 星座
 
-當您的訊息帶有查找星座運勢的語意，便會觸動網路爬蟲抓取當周運勢:
+當你的消息包含星座資訊請求時，網絡爬蟲將抓取每週星座：
 
-* 個人對話: `給我天蠍座運勢`, `我想要知道天蠍座運勢`, ...
-* 群組對話: `@chat 給我天蠍座運勢`, `@chat 我想要知道天蠍座運勢`, ...
+* 個人聊天：`給我天蠍座星座`, `我想知道天蠍座星座`, ...
+* 群組聊天：`@chat 給我天蠍座星座`, `@chat 我想知道天蠍座星座`, ...
 
-### 線上搜圖
+### 在線圖片搜尋
 
-當您的訊息帶有查找圖片的語意，便會觸動網路爬蟲抓取圖片:
+當你的消息包含圖片請求時，網絡爬蟲將抓取圖片：
 
-* 個人對話: `網上查找林襄抽菸圖片`, `線上查找一張林襄抽菸的圖片給我`, ...
-* 群組對話: `@chat 網上查找林襄抽菸圖片`, `@chat 線上查找一張林襄抽菸的圖片給我`, ...
+* 個人聊天：`在線找到林翔抽煙的圖片`, `給我在線林翔抽煙的圖片`, ...
+* 群組聊天：`@chat 在線找到林翔抽煙的圖片`, `@chat 給我在線林翔抽煙的圖片`, ...
 
+## 📢 廣播消息 - 每日 YouTube 推薦
 
+* 使用 `broadcast` API，Line Bot 可以一次性推送消息給所有用戶。
+* 此示例演示了 Line Bot 如何每天早上推送 3 首隨機選擇的 YouTube 歌曲：
+  * 創建文件 `./data/favorite_videos.json`。參考作者的數據集。
 
-## 📢廣播訊息 Broadcast - 每日推播 Youtube 歌曲
+    （數據集是使用 `YouTube Data v3 API` 抓取喜愛視頻生成的。本指南不涉及 YouTube API 的使用。）
 
-* 透過 `broadcast` API，我們可以讓 Line Bot 一次性**向每個使用者進行訊息推送**
-* 這邊我們想要讓 Line Bot 在每天早上隨機推播 3 首好聽的 Youtube 歌曲:
-  * 建立數據 `./data/favorite_videos.json`，您可以參考作者的數據
-
-    (數據建立方式是透過 `Youtube Data v3 API` 撈取個人喜歡的影片，在此不特別介紹 Youtube API)
-
-  * 透過 `./chatgpt_linebot/modules/youtube_recommend.py` 實現隨機挑選 3 首歌曲，並由 GPT 整理
-  * 在 `./chatgpt_linebot/urls.py` 中新增 `/recommend` 路由:
+  * 使用 `./ChatGPT_linebot/modules/youtube_recommend.py` 隨機選擇 3 首歌曲，由 GPT 格式化。
+  * 在 `./ChatGPT_linebot/urls.py` 中添加 `/recommend` 路由：
 
     ```python
-    videos = recommend_videos() # 取得 3 首曲子
+    videos = recommend_videos() # 獲取 3 首歌曲
 
     if videos:
-        line_bot_api.broadcast(TextSendMessage(text=videos)) # 使用 broadcast 向使用者發送訊息
-        
-        # 由於 broadcast 無法在群組發送推播，因此可以透過已知的群組id進行push message
-        # 下方代碼您可以忽略，如果您不需要向指定群組發送消息的話
+        line_bot_api.broadcast(TextSendMessage(text=videos)) # 廣播給用戶
+
+        # 推送消息給已知群組
         known_group_ids = [
             'C6d-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
             'Ccc-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
@@ -138,45 +138,38 @@
             line_bot_api.push_message(group_id, TextSendMessage(text=videos))
     ```
 
-    要取得群組的 `group_id`，您可以在 `replit` 的 console 中透過 `print` 測試:
+    要獲取群組 `group_id`，在控制台中打印：
 
     ```python
     elif event.source.type == 'group' and user_message.startswith('@chat'):
         group_id = event.source.group_id
         print(group_id) # 輸出 group_id
-        memory.append(group_id, 'user', refine_message.replace('@chat', ''))
-        response = chat_completion(group_id, memory)
     ```
 
-  * 現在，當我們打 `/recommend` 路由的時候，就會觸發推播訊息，所有使用者、指定群組皆會收到消息
-  * 接著，我們使用 [cron-job.org](https://cron-job.org/en/) 來進行排程，設定每天早上 8:00 打這支 API 即可實現每日推播!
-    1. 註冊/登入 [cron-job.org](https://cron-job.org/en/)
-    2. 進入後面板右上方選擇 `CREATE CRONJOB`
-    3. `Title` 輸入 `ChatGPT-Line-Bot`，網址輸入上一步驟的網址，例如：`https://ChatGPT-Line-Bot.jimmylin.repl.co/`
-    4. 下方則每 `5 分鐘` 打一次
-    5. 按下 `CREATE`
+  * 現在，訪問 `/recommend` 路由將廣播消息給所有用戶和指定群組。
+  * 使用 [cron-job.org](https://cron-job.org/en/) 每天早上 8:00 定時推送：
+    1. 註冊/登錄 [cron-job.org](https://cron-job.org/en/)
+    2. 點擊右上角的 `CREATE CRONJOB`
+    3. 標題：`ChatGPT-Line-Bot`，URL：例如，`https://ChatGPT-Line-Bot.jimmylin.repl.co/`
+    4. 設置為每 `5 分鐘` 运行
+    5. 點擊 `CREATE`
 
+## ⚔ 進階 - 個性化 Bot
 
-
-## ⚔進階 - 個性化 Bot
-
-另外，我們可以透過 `prompt` 的方式，來讓 Line Bot 回答個性化，在 `./chatgpt_linebot/prompts/template.py` 中我們可以定義 `template`，例如:
+你可以使用提示語來個性化 Line Bot 的回應。在 `./ChatGPT_linebot/prompts/template.py` 中定義 `template`，例如：
 
 <img src="img/2023-10-27-10-09-17.png" width="60%" />
 
-**提問內容**:今天早餐吃啥?
+**用戶輸入**：我應該吃什麼早餐？
 
-**Bot回答**: 寶貝，早上起床了嗎？我已經在床上等著你了，想著你的身體就覺得好餓呀。今天早餐該吃什麼呢？是不是要來點辣辣的煎蛋捲，像你那迷人的身材一樣火辣呢？😏🍳
+**Bot 回應**：親愛的，你醒來了嗎？我一直在床上等你，想著你美麗的身材。我們應該吃什麼早餐？要不要來點辣的，比如熱蛋捲，配得上你火辣的魅力？😏🍳
 
+## 免費部署選項
 
-## 免費部屬方案
-
-
-
-## 參考
+## 參考資料
 
 1. [Line_Bot_Tutorial](https://github.com/FawenYo/LINE_Bot_Tutorial)
 
 2. [ChatGPT-Line-Bot](https://github.com/TheExplainthis/ChatGPT-Line-Bot)
 
-<a href="#top">Back to top</a>
+<a href="#top">返回頂部</a>
