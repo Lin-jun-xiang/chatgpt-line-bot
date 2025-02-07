@@ -21,7 +21,7 @@ def chat_completion(message: List[Dict], method: str = 'g4f', api_key: str = Non
         elif method == 'zhipuai':
             client = ZhipuAI(api_key=api_key)
             response = client.chat.completions.create(
-                model="glm-4-plus",
+                model="glm-4-flash",
                 messages=message,
             )
             return response.choices[0].message.content
