@@ -1,3 +1,4 @@
+```markdown
 # ChatGPT Line Bot
 
 * [English](README.md)
@@ -5,20 +6,20 @@
 * [简体中文](README.zh-CN.md)
 * [Française](README.French.md)
 
-## 🤖 Introduction
+## 🤖 Présentation
 
-Intégrez le bot ChatGPT à Line. Tapez simplement du texte dans la zone de saisie pour commencer à interagir avec ChatGPT.
+Intégrez le ChatGPT Bot à Line. Entrez simplement du texte dans la zone de saisie pour commencer à interagir avec ChatGPT.
 
 <img src="img/2023-10-25-10-03-47.png" width="30%" />
 
 ## ✨ Fonctionnalités
 
-* **Complètement gratuit** Bot ChatGPT
-* Informations **horoscope hebdomadaire** (en temps réel)
+* ChatGPT Bot **completement gratuit**
+* **Informations astrologiques hebdomadaires** (en temps réel)
 
     <img src="img/2023-11-02-10-00-32.png" width="20%"/>
 
-* Notification programmée pour les chaînes de **musique YouTube**
+* **Push notifications de chaînes YouTube musique** (à heure fixe)
 
     <img src="img/2023-11-03-14-44-41.png" width="30%" />
 
@@ -27,149 +28,119 @@ Intégrez le bot ChatGPT à Line. Tapez simplement du texte dans la zone de sais
     <img src="img/2024-05-17-15-08-12.png" width="40%"/>
 
 > [!NOTE]
-> Si vous avez des demandes de fonctionnalités, n'hésitez pas à soumettre un PR ou un ISSUE.
+> Si vous avez des demandes de fonctionnalités, veuillez soumettre PR ou ISSUE à tout moment.
 
 ## 🔨 Outils
 
-* `Python FastAPI` : Créer l'API de réponse ChatGPT
-* `gpt4free` : **Utiliser l'API OpenAI gratuitement**
-* `zhipuai` : **Utiliser l'API GPT gratuitement**
-* `Line messaging API channel` : Connecter l'API ChatGPT
+* `Python FastAPI` : Créez une API de réponse ChatGPT
+* `gpt4free` : **Utilisation gratuite de l'API OpenAI**
+* `zhipuai` : **Utilisation gratuite de l'API GPT**
+* `Line messaging API channel` : Connectez l'API ChatGPT
 * `GitHub` : Dépôt de code
-* `replit/render/ngrok` : **Déployer votre propre FastAPI gratuitement**
-* `CronJob` : Envoyer des requêtes programmées gratuitement, permettant des messages de notification programmés
+* `replit/render/ngrok` : **Déploiement gratuit de votre propre FastAPI**
+* `CronJob` : Envoyez des demandes programmées gratuites pour effectuer des push notifications
 
-## 🧠 Options gratuites GPT
+## 🧠 Options GPT gratuites
 
-Puisque `g4f` dépend du reverse engineering pour appeler l'API d'OpenAI, il peut être instable. Par conséquent, l'auteur suggère une solution alternative utilisant la plateforme ouverte **Zhipu AI** pour accéder gratuitement à l'API GPT.
+En raison de la dépendance de `g4f` à l'inversement d'API OpenAI, elle peut être instable. Par conséquent, l'auteur recommande d'utiliser la plate-forme ouverte **Zhipu AI** comme alternative gratuite à l'API GPT.
 
-* `g4f` : Utiliser le reverse engineering pour appeler l'API OpenAI
-* `zhipuai` : La plateforme ouverte **Zhipu AI** offre une API GPT gratuite. Visitez le [site officiel](https://open.bigmodel.cn/dev/howuse/glm-4) pour créer un compte sans nécessiter de carte de crédit ni frais. Ajoutez une clé API dans le [Centre Personnel](https://open.bigmodel.cn/usercenter/proj-mgmt/apikeys) comme indiqué ci-dessous. Définissez cette clé API dans les variables d'environnement pour utiliser cette option GPT.
+* `g4f` : Utilise l'inversement pour appeler l'API OpenAI
+* `zhipuai` : **Plateforme ouverte Zhipu AI** fournissant une API GPT gratuite. Visitez [site officiel](https://open.bigmodel.cn/dev/howuse/glm-4) pour vous inscrire, sans carte de crédit ni frais. Ajoutez l'API clé dans [centre personnel](https://open.bigmodel.cn/usercenter/proj-mgmt/apikeys) comme indiqué ci-dessous. Configurez cette clé API dans les variables d'environnement pour utiliser cette option GPT.
     ![](static/images/2025-01-02-10-18-10.png)
 
-## 🎈 Étapes d'installation
+## 🎈 Instructions d'installation
 
-### Obtenir les Tokens
+### Obtenir des Tokens
 
-1. Obtenir les Tokens Line :
+1. Obtenez des Tokens Line :
     1. Connectez-vous à [Line Developer](https://developers.line.biz/en/)
-    2. Créer un bot :
-        1. Créer un `Provider` -> Cliquez sur `Create`
-        2. Créer un `Channel` -> Sélectionnez `Create a Messaging API channel`
-        3. Remplissez les informations de base requises
-        4. Après completion, allez dans `Basic Settings` -> Sous `Channel Secret`, cliquez sur `Issue` pour générer le `LINE_CHANNEL_SECRET` (utilisé plus tard).
-        5. Sous `Messaging API`, cliquez sur `Issue` pour générer le `Channel access token` (utilisé plus tard).
+    2. Créez un bot :
+        1. Créez un `Provider` -> Cliquez sur `Create`
+        2. Créez un `Channel` -> Choisissez `Create a Messaging API channel`
+        3. Remplissez les informations de base nécessaires
+        4. Terminez la création, puis accédez à `Basic Settings` -> Cliquez sur `Issue` pour générer `LINE_CHANNEL_SECRET` (utile après) .
+        5. Sous `Messaging API`, cliquez sur `Issue` pour générer `Channel access token` (utile après).
 
-### Configuration et Exécution du Projet
+### Configuration du projet et exécution
 
-1. Forker le Projet GitHub :
-    1. Inscrivez-vous/Connectez-vous à [GitHub](https://github.com/)
-    2. Naviguez vers [ChatGPT-Line-Bot](https://github.com/Lin-jun-xiang/ChatGPT-Line-Bot)
-    3. Cliquez sur `Star` pour soutenir le développeur
-    4. Cliquez sur `Fork` pour copier tout le code dans votre dépôt
-2. Déploiement :
+1. Fork le projet GitHub :
+    * Inscrivez-vous / connectez-vous à [GitHub](https://github.com/)
+    * Allez à [ChatGPT-Line-Bot](https://github.com/Lin-jun-xiang/ChatGPT-Line-Bot)
+    * Cliquez sur `Star` pour soutenir le développeur
+    * Cliquez sur `Fork` pour copier tout le code dans votre dépôt
 
-* `ngrok` : Utiliser un ordinateur local (ou Google Colab) comme serveur pour déployer l'API
-  * Téléchargez la version appropriée de `ngrok` pour votre OS
-  * Ajoutez le chemin de `ngrok.exe` aux variables d'environnement de votre système
-  * Lancer FastAPI dans le terminal : `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_API_KEY="..."; python main.py`
-    * `GPT_METHOD` : Choisissez `g4f` ou `zhipuai`
-    * `GPT_API_KEY` : Si vous utilisez la méthode `zhipuai`, fournissez votre clé API
-  * Exécutez : `ngrok config add-authtoken <token>`. Obtenez le token depuis votre tableau de bord personnel [ngrok](https://dashboard.ngrok.com/get-started/your-authtoken).
-  * Exécutez : `ngrok http 8080`. L'URL de transfert sera l'URL du webhook.
+2. Démarrer le serveur Python FastAPI :
+   * `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_API_KEY="..."; python main.py`
+      * `GPT_METHOD` : Choisissez `g4f` ou `zhipuai`
+      * `GPT_API_KEY` : Si vous utilisez la méthode `zhipuai`, fournissez votre clé API
 
-    <img src="img/2024-05-15-14-03-09.png" width="60%"/>
+3. `ngrok` : Déployez l'API localement en utilisant votre ordinateur (ou Google Colab) comme serveur
+   * [Créez l'environnement ngrok](https://dashboard.ngrok.com/get-started/setup/)
+   * Téléchargez la version de `ngrok` adaptée à votre système d'exploitation
+   * Ajoutez le chemin d'accès à `ngrok.exe` aux variables d'environnement du système
+   * Exécutez : `ngrok config add-authtoken <token>` . Obtenez le token à partir de votre [tableau de bord personnel ngrok](https://dashboard.ngrok.com/get-started/your-authtoken) .
+   * Exécutez : `ngrok http --url=<YOUR STATIC DOMAIN>.ngrok-free.app 8090` (si cela échoue, essayez `ngrok http --hostname=<YOUR STATIC DOMAIN>.ngrok-free.app 8090`) , puis redirigez l'URL en tant que webhook URL.
 
-Enfin, remplacez l'URL du webhook dans la section `Messaging API` de la console Line Developer. ([Voir l'étape 2 dans la Configuration du Projet](#project-setup-and-execution))
+      <img src="static/images/2025-02-11-16-16-27.png" width="60%" />
 
-### Connecter le Service avec le Bot Line
+      <img src="img/2024-05-15-14-03-09.png" width="60%"/>
 
-Revenez à la [page d'accueil Line Developer](https://manager.line.biz/account), cliquez sur `Add Friend Guide`, et scannez le QR code pour ajouter le Bot Line comme ami.
+4. Enfin, remplacez `http --url=<YOUR STATIC DOMAIN>.ngrok-free.app/callback` par le webhook URL dans la section `Messaging API` de la console de Line Developer.
 
-Page d'accueil -> Sélectionnez votre bot -> Outils d'ajout d'ami -> Créer un Code-barres d'Action d'Ami (https://manager.line.biz/account/<yourBotId>/gainfriends)
+    <img src="static/images/2025-02-11-16-26-05.png" width="60%" />
 
-Félicitations ! Vous avez créé votre premier Bot Line. Essayez de lui parler - il vous répondra !
+### Connecter les services et le Line Bot
 
-## ⛄ Chat de Groupe vs Chat Individuel
+Retournez à [Line Developer Home](https://manager.line.biz/account), cliquez sur `Add Friend Guide`, scannez le QR code pour ajouter le Line Bot comme ami.
 
-* Dans un chat en tête-à-tête, n'importe quel message déclenchera une réponse.
-* Dans les chats de groupe, utilisez le préfixe `@chat` pour interagir avec le bot, par exemple, `@chat hi~`.
+Page d'accueil -> Sélectionnez votre bot -> Outils d'ajout d'ami -> Créez un code d'action d'ami (https://manager.line.biz/account/<yourBotId>/gainfriends)
 
-## 🎃 Fonctionnalités Spéciales
+Félicitations ! Vous avez créé votre premier Line Bot. Essayez de lui parler — il vous répondra !
 
-### Horoscope
+## ⛄ Conversation de groupe vs. Conversation personnelle
 
-Lorsque votre message contient une demande d'information sur l'horoscope, un crawler web récupérera l'horoscope hebdomadaire :
+* Dans une conversation un à un, tout message déclenche une réponse.
+* Dans une conversation de groupe, utilisez le préfixe `@chat` pour interagir avec le robot, par exemple, `@chat hi~`.
 
-* Chat personnel : `Donne-moi l'horoscope du Scorpion`, `Je veux connaître l'horoscope du Scorpion`, ...
-* Chat de groupe : `@chat Donne-moi l'horoscope du Scorpion`, `@chat Je veux connaître l'horoscope du Scorpion`, ...
+## 🎃 Fonctionnalités spéciales
 
-### Recherche d'Images en Ligne
+### Astrologie
 
-Lorsque votre message contient une demande d'image, un crawler web récupérera une image :
+Lorsque votre message contient une demande d'information astrologique, le spider Web capture chaque semaine les informations astrologiques :
 
-* Chat personnel : `Trouve une image de Lin Xiang fumer en ligne`, `Donne-moi une image de Lin Xiang fumer en ligne`, ...
-* Chat de groupe : `@chat Trouve une image de Lin Xiang fumer en ligne`, `@chat Donne-moi une image de Lin Xiang fumer en ligne`, ...
+* Conversation personnelle : `Donnez-moi le signe du Scorpion`, `Je veux savoir le signe du Scorpion`, ...
+* Conversation de groupe : `@chat Donnez-moi le signe du Scorpion`, `@chat Je veux savoir le signe du Scorpion`, ...
 
-## 📢 Messages de Diffusion - Recommandations YouTube Quotidiennes
+### Recherche d'images en ligne
 
-* En utilisant l'API `broadcast`, le Bot Line peut pousser des messages à tous les utilisateurs en même temps.
-* Cet exemple montre comment le Bot Line peut pousser 3 chansons YouTube sélectionnées au hasard chaque matin :
-  * Créez le fichier `./data/favorite_videos.json`. Référez-vous au jeu de données de l'auteur.
+Lorsque votre message contient une demande d'image, le spider Web capture l'image :
 
-    (Le jeu de données est généré en utilisant l'API `YouTube Data v3` pour récupérer les vidéos favorites. Ce guide ne couvre pas l'utilisation de l'API YouTube.)
+* Conversation personnelle : `Trouver en ligne une photo de Lin Xiang qui fume`, `Donnez-moi une photo en ligne de Lin Xiang qui fume`, ...
+* Conversation de groupe : `@chat Trouver en ligne une photo de Lin Xiang qui fume`, `@chat Donnez-moi une photo en ligne de Lin Xiang qui fume`, ...
 
-  * Utilisez `./ChatGPT_linebot/modules/youtube_recommend.py` pour sélectionner 3 chansons au hasard, formatées par GPT.
-  * Ajoutez une route `/recommend` dans `./ChatGPT_linebot/urls.py` :
+## 📢 Messages de diffusion - recommandations YouTube quotidiennes
 
-    ```python
-    videos = recommend_videos() # Obtenir 3 chansons
+* Comme pour **Daily YouTube Recommendations**, il suffit de remplacer `/recommend` par `/cwsChannel`.
+* Il est possible de configurer CronJob pour exécuter toutes les `3 heures`.
 
-    if videos:
-        line_bot_api.broadcast(TextSendMessage(text=videos)) # Diffuser aux utilisateurs
+  <img src="static/images/2025-02-11-17-27-24.png" width="60%" />
 
-        # Pousser des messages aux groupes connus
-        known_group_ids = [
-            'C6d-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-            'Ccc-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-            'Cbb-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-        ]
-        for group_id in known_group_ids:
-            line_bot_api.push_message(group_id, TextSendMessage(text=videos))
-    ```
+## ⚔ Avancé - Bot personnalisé
 
-    Pour récupérer le `group_id`, affichez-le dans la console :
-
-    ```python
-    elif event.source.type == 'group' and user_message.startswith('@chat'):
-        group_id = event.source.group_id
-        print(group_id) # Sortir group_id
-    ```
-
-  * Maintenant, appeler la route `/recommend` diffusera des messages à tous les utilisateurs et aux groupes spécifiés.
-  * Utilisez [cron-job.org](https://cron-job.org/en/) pour programmer des poussées quotidiennes à 8h00 :
-    1. Inscrivez-vous/Connectez-vous à [cron-job.org](https://cron-job.org/en/)
-    2. Cliquez sur `CREATE CRONJOB` dans le coin supérieur droit
-    3. Titre : `ChatGPT-Line-Bot`, URL : par exemple, `https://ChatGPT-Line-Bot.jimmylin.repl.co/`
-    4. Définir pour s'exécuter toutes les `5 minutes`
-    5. Cliquez sur `CREATE`
-
-## ⚔ Avancé - Bot Personnalisé
-
-Vous pouvez personnaliser les réponses du Bot Line en utilisant des prompts. Définissez `template` dans `./ChatGPT_linebot/prompts/template.py`, par exemple :
+Vous pouvez utiliser des prompts pour personnaliser les réponses du Line Bot. Définissez `template` dans `./ChatGPT_linebot/prompts/template.py`, par exemple :
 
 <img src="img/2023-10-27-10-09-17.png" width="60%" />
 
-**Entrée utilisateur** : Que devrais-je prendre pour le petit-déjeuner ?
+**Entrée de l'utilisateur** : Je devrais manger quoi pour le petit-déjeuner ?
 
-**Réponse du bot** : Chérie, es-tu déjà réveillée ? J'ai attendu au lit, en pensant à ta silhouette adorable. Que devrions-nous prendre pour le petit-déjeuner ? Et si on prenait quelque chose d'épicé, comme une omelette brûlante pour correspondre à ton charme ardent ? 😏🍳
+**Réponse du Bot** : Cher, es-tu réveillé ? Je suis resté au lit, attendant ton magnifique corps. Que devrions-nous manger pour le petit-déjeuner ? Peut-être quelque chose de piquant, comme un wrap chaud, qui correspond à ta charmante personnalité ? 😏🍳
 
-## Options de Déploiement Gratuit
-
-## Références
+## Ressources de référence
 
 1. [Line_Bot_Tutorial](https://github.com/FawenYo/LINE_Bot_Tutorial)
 
 2. [ChatGPT-Line-Bot](https://github.com/TheExplainthis/ChatGPT-Line-Bot)
 
 <a href="#top">Retour en haut</a>
+   --------------------------------
+```
