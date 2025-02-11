@@ -63,24 +63,30 @@
 ### 專案設置與執行
 
 1. Fork GitHub 專案：
-    1. 註冊/登錄 [GitHub](https://github.com/)
-    2. 前往 [ChatGPT-Line-Bot](https://github.com/Lin-jun-xiang/ChatGPT-Line-Bot)
-    3. 點擊 `Star` 支持開發者
-    4. 點擊 `Fork` 將所有代碼複製到你的存儲庫
-2. 部署：
+    * 註冊/登錄 [GitHub](https://github.com/)
+    * 前往 [ChatGPT-Line-Bot](https://github.com/Lin-jun-xiang/ChatGPT-Line-Bot)
+    * 點擊 `Star` 支持開發者
+    * 點擊 `Fork` 將所有代碼複製到你的存儲庫
 
-* `ngrok`：使用本地電腦（或 Google Colab）作為服務器來部署 API
-  * 下載適合你操作系統的 `ngrok` 版本
-  * 將 `ngrok.exe` 路徑添加到系統的環境變量中
-  * 在終端啟動 FastAPI：`$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_API_KEY="..."; python main.py`
-    * `GPT_METHOD`：選擇 `g4f` 或 `zhipuai`
-    * `GPT_API_KEY`：如果使用 `zhipuai` 方法，提供你的 API 金鑰
-  * 執行：`ngrok config add-authtoken <token>`。從你的個人 [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken) 獲取 token。
-  * 執行：`ngrok http 8080`。轉發 URL 將作為 webhook URL。
+2. 啟動 Python FastAPI Server:
+   *  `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_API_KEY="..."; python main.py`
+      * `GPT_METHOD`：選擇 `g4f` 或 `zhipuai`
+      * `GPT_API_KEY`：如果使用 `zhipuai` 方法，提供你的 API 金鑰
 
-    <img src="img/2024-05-15-14-03-09.png" width="60%"/>
+3. `ngrok`：使用本地電腦（或 Google Colab）作為服務器來部署 API
+   *  [建立 ngrok 環境](https://dashboard.ngrok.com/get-started/setup/)
+   *  下載適合你操作系統的 `ngrok` 版本
+   *  將 `ngrok.exe` 路徑添加到系統的環境變量中
+   *  執行：`ngrok config add-authtoken <token>`。從你的個人 [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken) 獲取 token。
+   *  執行：`ngrok http --url=<YOUR STATIC DOMAIN>.ngrok-free.app 8090` (若失敗請改嘗試 `ngrok http --hostname=<YOUR STATIC DOMAIN>.ngrok-free.app 8090`)，並轉發 URL 將作為 webhook URL。
 
-最後，替換 Line Developer 控制台 `Messaging API` 區域中的 webhook URL。（[見專案設置步驟 2](#project-setup-and-execution)）
+      <img src="static/images/2025-02-11-16-16-27.png" width="60%" />
+
+      <img src="img/2024-05-15-14-03-09.png" width="60%"/>
+
+4. 最後，將 `http --url=<YOUR STATIC DOMAIN>.ngrok-free.app/callback` 替換 Line Developer 控制台 `Messaging API` 區域中的 webhook URL。
+
+    <img src="static/images/2025-02-11-16-26-05.png" width="60%" />
 
 ### 連接服務與 Line Bot
 
@@ -154,6 +160,13 @@
     4. 設置為每 `5 分鐘` 运行
     5. 點擊 `CREATE`
 
+## 📢 廣播消息 - 天下雜誌財經資訊
+
+* 與 **每日 YouTube 推薦** 一樣，只需要將 `/recommend` 替換成 `/cwsChannel` 即可。
+* 可於 CronJob 設置每 `3 小時` 運行
+
+  <img src="static/images/2025-02-11-17-27-24.png" width="60%" />
+
 ## ⚔ 進階 - 個性化 Bot
 
 你可以使用提示語來個性化 Line Bot 的回應。在 `./ChatGPT_linebot/prompts/template.py` 中定義 `template`，例如：
@@ -163,8 +176,6 @@
 **用戶輸入**：我應該吃什麼早餐？
 
 **Bot 回應**：親愛的，你醒來了嗎？我一直在床上等你，想著你美麗的身材。我們應該吃什麼早餐？要不要來點辣的，比如熱蛋捲，配得上你火辣的魅力？😏🍳
-
-## 免費部署選項
 
 ## 參考資料
 

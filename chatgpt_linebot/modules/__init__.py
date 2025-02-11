@@ -1,3 +1,4 @@
+from chatgpt_linebot.modules.business_channel import CWArticleScraper
 from chatgpt_linebot.modules.chat import chat_completion
 from chatgpt_linebot.modules.gpt import chat_completion as chat
 from chatgpt_linebot.modules.horoscope import Horoscope

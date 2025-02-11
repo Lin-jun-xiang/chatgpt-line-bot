@@ -8,6 +8,7 @@ from linebot.models import *
 
 from chatgpt_linebot.memory import Memory
 from chatgpt_linebot.modules import (
+    CWArticleScraper,
     Horoscope,
     ImageCrawler,
     RapidAPIs,
@@ -26,6 +27,7 @@ line_app = APIRouter()
 memory = Memory(3)
 horoscope = Horoscope()
 rapidapis = RapidAPIs(config.RAPID)
+cws_scraper = CWArticleScraper()
 
 line_bot_api = LineBotApi(config.LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(config.LINE_CHANNEL_SECRET)
@@ -160,7 +162,7 @@ def handle_message(event) -> None:
 
 
 @line_app.get("/recommend")
-def recommend_from_yt() -> None:
+def recommend_from_yt() -> dict:
     """Line Bot Broadcast
 
     Descriptions
@@ -193,4 +195,16 @@ def recommend_from_yt() -> None:
     else:
         print('Failed recommended videos')
         return {"status": "failed", "message": "no get recommended videos."}
-    
+
+
+@line_app.get('/cwsChannel')
+def get_cws_channel() -> dict:
+    article_details = cws_scraper.get_latest_article()
+    cws_channel_response = cws_scraper.get_cws_channel_response(article_details)
+
+    if cws_channel_response:
+        line_bot_api.broadcast(TextSendMessage(text=cws_channel_response))
+        return {"status": "success", "message": "got cws channel response."}
+
+    else:
+        return {"status": "failed", "message": "no get cws channel response."}

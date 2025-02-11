@@ -22,6 +22,16 @@ youtube_recommend_template = """
 以下是三個待推薦的歌單:\n
 """
 
+cws_channel_template = """
+妳是一個專業的財經週刊報導者，妳需要將以下資料作一個摘要提供給 LINE 閱讀者。
+- 列出標題、內容摘要、關鍵字
+- 無需使用 markdown 語言 (因為 LINE 無法呈現)
+- 盡量描述重點、簡短描述
+- 讓使用者快速了解最新資訊
+
+資料如下:\n
+"""
+
 agent_template = """
 The available tools are:
 - g4f_generate_image: Generates images from text using G4F AI. Input is <user query>, and it returns only one URL.
@@ -30,7 +40,7 @@ The available tools are:
 - horoscope.get_horoscope_response: Retrieves the weekly horoscope for a specific zodiac sign. Input is <zodiac sign>, and it returns a text response.
 - chat_completion: Handles general conversation content. Input is <user query>, and it returns a text response.
 Based on the user's query, determine which tool should be used and return the function name of that tool along with its input.
-return: function name, input
+return format (use , split): function name, input
 
 user query: 
 """
