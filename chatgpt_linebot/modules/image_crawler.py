@@ -1,7 +1,6 @@
 import requests
 from icrawler import ImageDownloader
 from icrawler.builtin import GoogleImageCrawler
-from serpapi import GoogleSearch
 
 
 class CustomLinkPrinter(ImageDownloader):
@@ -61,6 +60,10 @@ class ImageCrawler:
 
     def _serpapi(self, search_query: str) -> list[str]:
         """Serpapi for google search images"""
+        try:
+            from serpapi import GoogleSearch
+        except:
+            pass
         params = {
             "engine": "google",
             "q": search_query,

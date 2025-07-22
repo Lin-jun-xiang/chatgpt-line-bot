@@ -1,34 +1,20 @@
 import re
 
 import requests
-from g4f.client import Client
-from g4f.cookies import set_cookies
-
-set_cookies(".google.com", {
-  "__Secure-1PSID": "",
-  "__Secure-1PSIDCC": "",
-  "__Secure-1PSIDTS": "",
-})
+from zhipuai import ZhipuAI
 
 
-def g4f_generate_image(query: str) -> str:
+def generate_image(query: str, api_key: str) -> str:
     """Should setup the cookies first."""
     try:
-        client = Client()
-        query_en = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{
-                'role': 'user',
-                'content': f"Translate the following text to English, and just return english version: {query}"
-            }],
-            ignored=["Cnote", "Aichatos"]
-        ).choices[0].message.content
+        client = ZhipuAI(api_key=api_key)
 
-        response = client.images.generate(
-            model="gemini",
-            prompt=query_en,
+        response = client.images.generations(
+            model="cogview-3-flash",
+            prompt=query,
         )
         image_url = response.data[0].url
+        print(f'Successfully generated image from Zhipuai: {image_url}')
         return image_url
 
     except Exception as e:

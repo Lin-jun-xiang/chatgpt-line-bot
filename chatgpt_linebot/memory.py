@@ -27,13 +27,14 @@ class Memory(MemoryInterface):
 
         id (int): user_id, grouop_id, room_id
     """
-    def __init__(self, memory_message_count: int) -> None:
+    def __init__(self, memory_message_count: int, system_prompt: str) -> None:
         self.storage = defaultdict(list)
         self.memory_message_count = memory_message_count
+        self.system_prompt = system_prompt
 
     def _initialize(self, id: str) -> None:
         self.storage[id] = [{
-            'role': 'system', 'content': 'You are a helpful assistant.'
+            'role': 'system', 'content': self.system_prompt
         }]
 
     def _drop_message(self, id: str) -> str:

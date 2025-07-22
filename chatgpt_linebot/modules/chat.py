@@ -6,10 +6,10 @@ def chat_completion(
     id: int,
     memory: Memory,
     method: str = 'g4f',
-    api_key: str = None
+    api_key: str = None,
+    vlm: bool = False,
 ) -> str:
     """Use OpenAI API via gpt4free providers"""
-    response = chat(memory.get(id), method, api_key)
-    memory.append(id, 'system', response)
+    response = chat(memory.get(id), method, api_key, vlm)
     print(memory.storage)
     return response

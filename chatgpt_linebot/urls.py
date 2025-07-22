@@ -1,3 +1,6 @@
+import base64
+import json
+import re
 import sys
 from urllib.parse import urlparse
 
@@ -14,7 +17,7 @@ from chatgpt_linebot.modules import (
     RapidAPIs,
     chat,
     chat_completion,
-    g4f_generate_image,
+    generate_image,
     recommend_videos,
 )
 from chatgpt_linebot.prompts import agent_template, girlfriend
@@ -24,7 +27,8 @@ sys.path.append(".")
 import config
 
 line_app = APIRouter()
-memory = Memory(3)
+memory = Memory(10, girlfriend)
+users_image = {}
 horoscope = Horoscope()
 rapidapis = RapidAPIs(config.RAPID)
 cws_scraper = CWArticleScraper()
@@ -65,22 +69,45 @@ def is_url(string: str) -> bool:
         return False
 
 
+def extract_legal_json(text: str) -> dict:
+    """Convert the LLM Resonse to JSON."""
+    try:
+        return json.loads(text)
+    except Exception:
+        pass
+
+    match = re.search(r'`json\n([\s\S]+?)\n`', text)
+    json_str = match.group(1)
+    json_data = json.loads(json_str)
+    return json_data
+
+
 def agent(query: str) -> tuple[str]:
     """Auto use correct tool by user query."""
     prompt = agent_template + query
     message = [{'role': 'user', 'content': prompt}]
 
-    tool, input = chat(message, config.GPT_METHOD, config.GPT_API_KEY).split(', ')
+    try:
+        response = chat(message, config.GPT_METHOD, config.GPT_API_KEY)
 
-    print(f"""
-    Agent
-    =========================================
-    Query: {query}
-    Tool: {tool}
-    Input: {input}
-    """)
+        result = extract_legal_json(response)
+        tool = result.get('tool', 'chat_completion')
+        input_query = result.get('input', query)
 
-    return tool, input
+        print(f"""
+        Agent
+        =========================================
+        Query: {query}
+        Tool: {tool}
+        Input: {input_query}
+        Raw Response: {response}
+        """)
+
+        return tool, input_query
+        
+    except Exception as e:
+        print(f"JSON Parser Error for: {response}")
+        return 'chat_completion', query
 
 
 def search_image_url(query: str) -> str:
@@ -131,24 +158,38 @@ def handle_message(event) -> None:
     source_id = getattr(event.source, f"{source_type}_id", None)
 
     if source_type == 'user':
+        # 非群組聊天
         user_name = line_bot_api.get_profile(source_id).display_name
         print(f'{user_name}: {user_message}')
 
     else:
+        # 群組聊天
         if not user_message.startswith('@chat'):
+            # 在群組聊天中若沒有透過 @chat 輸入訊息則忽略
             return
         else:
             user_message = user_message.replace('@chat', '')
 
-    tool, input_query = agent(user_message)
-
-    if tool in ['chat_completion']:
-        input_query = f"{girlfriend}:\n {input_query}"
-        memory.append(source_id, 'user', f"{girlfriend}:\n {user_message}")
-
     try:
+        tool, input_query = agent(user_message)
+
+        if tool in ['chat_completion']:
+            memory.append(source_id, 'user', f"{user_message}")
+        elif tool in ['chat_image_inference']:
+            input_query = f"{input_query}"
+            memory.append(source_id, 'user', [
+                {"type": "image_url", "image_url": {"url": users_image[source_id]}},
+                {"type": "text", "text": f"{user_message}"}
+            ])
+        else:
+            memory.append(source_id, 'user', f"{user_message}")
+
         if tool in ['chat_completion']:
             response = chat_completion(source_id, memory, config.GPT_METHOD, config.GPT_API_KEY)
+        elif tool in ['chat_image_inference']:
+            response = chat_completion(source_id, memory, config.GPT_METHOD, config.GPT_API_KEY, vlm=True)
+        elif tool in ['generate_image']:
+            response = generate_image(input_query, config.GPT_API_KEY)
         else:
             response = eval(f"{tool}('{input_query}')")
 
@@ -156,9 +197,34 @@ def handle_message(event) -> None:
             send_image_reply(reply_token, response)
         else:
             send_text_reply(reply_token, response)
+        memory.append(source_id, 'system', response)
 
     except Exception as e:
         send_text_reply(reply_token, e)
+
+
+@handler.add(MessageEvent, message=(ImageMessage))
+def handle_image_message(event) -> None:
+    if not isinstance(event.message, ImageMessage):
+        return
+
+    message_id = event.message.id
+    
+    source_type = event.source.type
+    source_id = getattr(event.source, f"{source_type}_id", None)
+
+    try:
+        message_content = line_bot_api.get_message_content(message_id)
+        image_data = message_content.content
+        
+        image_base64 = base64.b64encode(image_data).decode('utf-8')
+
+        users_image[source_id] = f"data:image/jpeg;base64,{image_base64}"
+        
+        print(f"User {source_id} uploaded image, stored in memory")
+
+    except Exception as e:
+        print(f"Error processing image: {e}")
 
 
 @line_app.get("/recommend")

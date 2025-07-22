@@ -7,20 +7,30 @@
 
 ## 🤖 簡介
 
-將 ChatGPT Bot 整合到 Line。只需在輸入框中輸入文字，即可開始與 ChatGPT 互動。
+將 ChatGPT Bot 整合到 Line。並且完全免費支援一般**問答、圖片生成、圖片推理、再現圖片搜索**...等功能。
 
-<img src="img/2023-10-25-10-03-47.png" width="30%" />
 
 ## ✨ 功能
 
-* **完全免費** 的 ChatGPT Bot
+* **自然語言對話**
+
+    <img src="img/2023-10-25-10-03-47.png" width="15%" />
+
+* **圖片生成**
+
+    <img src="static/images/2025-07-22-17-43-28.png" width="30%"/>
+
+* **圖片推理**
+
+    <img src="static/images/2025-07-22-17-47-27.png" width="30%"/>
+
 * 每週 **星座資訊**（即時）
 
-    <img src="img/2023-11-02-10-00-32.png" width="20%"/>
+    <img src="img/2023-11-02-10-00-32.png" width="15%"/>
 
 * **YouTube 音樂** 頻道的定時推播
 
-    <img src="img/2023-11-03-14-44-41.png" width="30%" />
+    <img src="img/2023-11-03-14-44-41.png" width="20%" />
 
 * **在線圖片搜尋**（即時）
 
@@ -68,25 +78,63 @@
     * 點擊 `Star` 支持開發者
     * 點擊 `Fork` 將所有代碼複製到你的存儲庫
 
-2. 啟動 Python FastAPI Server:
-   *  `$env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_API_KEY="..."; python main.py`
-      * `GPT_METHOD`：選擇 `g4f` 或 `zhipuai`
-      * `GPT_API_KEY`：如果使用 `zhipuai` 方法，提供你的 API 金鑰
+2. 選擇部屬方式
 
-3. `ngrok`：使用本地電腦（或 Google Colab）作為服務器來部署 API
-   *  [建立 ngrok 環境](https://dashboard.ngrok.com/get-started/setup/)
-   *  下載適合你操作系統的 `ngrok` 版本
-   *  將 `ngrok.exe` 路徑添加到系統的環境變量中
-   *  執行：`ngrok config add-authtoken <token>`。從你的個人 [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken) 獲取 token。
-   *  執行：`ngrok http --url=<YOUR STATIC DOMAIN>.ngrok-free.app 8090` (若失敗請改嘗試 `ngrok http --hostname=<YOUR STATIC DOMAIN>.ngrok-free.app 8090`)，並轉發 URL 將作為 webhook URL。
+    <details>
+    <summary><b>🏠 本地免費部署</b></summary>
 
-      <img src="static/images/2025-02-11-16-16-27.png" width="60%" />
+    ### 本地部署步驟
 
-      <img src="img/2024-05-15-14-03-09.png" width="60%"/>
+    #### 2.1 啟動 Python FastAPI Server
+    ```bash
+    $env:LINE_CHANNEL_SECRET="..."; $env:LINE_CHANNEL_ACCESS_TOKEN="..."; $env:SERPAPI_API_KEY="..."; $env:GPT_METHOD="..."; $env:GPT_API_KEY="..."; python main.py
+    ```
+    * `GPT_METHOD`：選擇 `g4f` 或 `zhipuai`
+    * `GPT_API_KEY`：如果使用 `zhipuai` 方法，提供你的 API 金鑰
 
-4. 最後，將 `http --url=<YOUR STATIC DOMAIN>.ngrok-free.app/callback` 替換 Line Developer 控制台 `Messaging API` 區域中的 webhook URL。
+    #### 2.2 使用 ngrok 建立隧道
+    使用本地電腦作為服務器來部署 API：
+
+    1. [建立 ngrok 環境](https://dashboard.ngrok.com/get-started/setup/)
+    2. 下載適合你操作系統的 `ngrok` 版本
+    3. 將 `ngrok.exe` 路徑添加到系統的環境變量中
+    4. 執行：`ngrok config add-authtoken <token>`。從你的個人 [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken) 獲取 token。
+    5. 執行：`ngrok http --url=<YOUR STATIC DOMAIN>.ngrok-free.app 8090` (若失敗請改嘗試 `ngrok http --hostname=<YOUR STATIC DOMAIN>.ngrok-free.app 8090`)
+
+        <img src="static/images/2025-02-11-16-16-27.png" width="60%" />
+        <img src="img/2024-05-15-14-03-09.png" width="60%"/>
+
+    #### 2.3 設置 Webhook URL
+    將 `https://<YOUR STATIC DOMAIN>.ngrok-free.app/callback` 替換 Line Developer 控制台 `Messaging API` 區域中的 webhook URL。
 
     <img src="static/images/2025-02-11-16-26-05.png" width="60%" />
+
+    </details>
+
+    <details>
+    <summary><b>☁️ 雲端免費部署</b></summary>
+
+    ### 雲端部署選項
+
+    #### 選項 1：Render 部署
+    1. 前往 [Render](https://render.com/) 並註冊帳戶
+    2. 點擊 "New Web Service"
+    3. 連接你的 **GitHub** 存儲庫
+    4. 設置環境變數：
+    - `LINE_CHANNEL_SECRET`
+    - `LINE_CHANNEL_ACCESS_TOKEN`
+    - `SERPAPI_API_KEY`（可選）
+    - `GPT_METHOD`
+    - `GPT_API_KEY`（如果使用 zhipuai）
+    5. 部署完成後，使用提供的 URL 作為 webhook
+    6. 結合 [cronjob](https://console.cron-job.org/jobs) 觸發定時調用服務，避免服務閒置過久關閉
+        ![](static/images/2025-07-22-16-32-04.png)
+
+    ### 設置 Webhook URL
+    將雲端服務提供的 URL（例如：`https://your-app.render.com/callback`）設置為 Line Developer 控制台中的 webhook URL。
+
+    </details>
+
 
 ### 連接服務與 Line Bot
 
@@ -101,23 +149,45 @@
 * 在一對一對話中，任何消息都會觸發回應。
 * 在群組對話中，使用 `@chat` 前綴與機器人互動，例如，`@chat hi~`。
 
-## 🎃 特殊功能
 
-### 星座
+## 🎃 特殊功能詳介
+
+<details>
+<summary><b>星座運勢查詢</b></summary>
 
 當你的消息包含星座資訊請求時，網絡爬蟲將抓取每週星座：
 
 * 個人聊天：`給我天蠍座星座`, `我想知道天蠍座星座`, ...
 * 群組聊天：`@chat 給我天蠍座星座`, `@chat 我想知道天蠍座星座`, ...
+</details>
 
-### 在線圖片搜尋
+<details>
+<summary><b>在線圖片搜尋</b></summary>
 
 當你的消息包含圖片請求時，網絡爬蟲將抓取圖片：
 
 * 個人聊天：`在線找到林翔抽煙的圖片`, `給我在線林翔抽煙的圖片`, ...
 * 群組聊天：`@chat 在線找到林翔抽煙的圖片`, `@chat 給我在線林翔抽煙的圖片`, ...
+</details>
 
-## 📢 廣播消息 - 每日 YouTube 推薦
+<details>
+<summary><b>圖片生成</b></summary>
+
+只要你輸入「生成」或「創建」相關的圖片請求，Bot 會自動使用 AI 生成圖片並回傳。
+
+* 例如：`生成一隻貓的圖片`, `創建一張風景圖`
+</details>
+
+<details>
+<summary><b>圖片推理（VLM）</b></summary>
+
+先上傳一張圖片，再詢問與圖片內容相關的問題，Bot 會用 AI 進行推理並回覆。
+
+* 例如：上傳圖片後問「這張圖片裡有什麼？」、「幫我分析這個截圖」
+</details>
+
+<details>
+<summary><b>自動廣播消息 - 每日 YouTube 推薦</b></summary>
 
 * 使用 `broadcast` API，Line Bot 可以一次性推送消息給所有用戶。
 * 此示例演示了 Line Bot 如何每天早上推送 3 首隨機選擇的 YouTube 歌曲：
@@ -159,13 +229,16 @@
     3. 標題：`ChatGPT-Line-Bot`，URL：例如，`https://ChatGPT-Line-Bot.jimmylin.repl.co/`
     4. 設置為每 `5 分鐘` 运行
     5. 點擊 `CREATE`
+</details>
 
-## 📢 廣播消息 - 天下雜誌財經資訊
+<details>
+<summary><b>自動廣播消息 - 財經資訊推播</b></summary>
+  * 與 **每日 YouTube 推薦** 一樣，只需要將 `/recommend` 替換成 `/cwsChannel` 即可。
+  * 可於 CronJob 設置每 `3 小時` 運行
 
-* 與 **每日 YouTube 推薦** 一樣，只需要將 `/recommend` 替換成 `/cwsChannel` 即可。
-* 可於 CronJob 設置每 `3 小時` 運行
+  <img src="static/images/2025-02-11-17-27-24.png" width="30%" />
 
-  <img src="static/images/2025-02-11-17-27-24.png" width="60%" />
+</details>
 
 ## ⚔ 進階 - 個性化 Bot
 

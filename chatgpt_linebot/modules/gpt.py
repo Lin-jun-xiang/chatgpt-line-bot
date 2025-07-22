@@ -7,7 +7,7 @@ from zhipuai import ZhipuAI
 g4f.debug.logging = True
 
 
-def chat_completion(message: List[Dict], method: str = 'g4f', api_key: str = None) -> str:
+def chat_completion(message: List[Dict], method: str = 'g4f', api_key: str = None, vlm: bool = False) -> str:
     """Use OpenAI API via gpt4free providers"""
     try:
         if method == 'g4f':
@@ -20,11 +20,19 @@ def chat_completion(message: List[Dict], method: str = 'g4f', api_key: str = Non
             response = response.choices[0].message.content
         elif method == 'zhipuai':
             client = ZhipuAI(api_key=api_key)
-            response = client.chat.completions.create(
-                model="glm-4-flash",
-                messages=message,
-            )
-            return response.choices[0].message.content
+            if not vlm:
+                response = client.chat.completions.create(
+                    model="glm-4-flash",
+                    messages=message,
+                )
+            else:
+                response = client.chat.completions.create(
+                    model="glm-4v-flash",
+                    messages=message
+                )
+            response = response.choices[0].message.content
+        print(f"Successfully called {method} model.")
+        return response
 
     except Exception as e:
         response = (
