@@ -178,6 +178,7 @@ def handle_message(event) -> None:
         else:
             user_message = user_message.replace('@chat', '')
 
+    response = ""
     try:
         tool, input_query = agent(user_message)
 
@@ -219,7 +220,7 @@ def handle_message(event) -> None:
         memory.append(source_id, 'system', response)
 
     except Exception as e:
-        send_text_reply(reply_token, e)
+        send_text_reply(reply_token, f"{e}: {response}")
 
 
 @handler.add(MessageEvent, message=(ImageMessage))
