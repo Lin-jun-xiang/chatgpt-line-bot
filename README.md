@@ -25,13 +25,14 @@
 
     <img src="static/images/2025-07-23-11-15-54.png" width="30%"/>
 
-    ![text2video](https://github.com/Lin-jun-xiang/chatgpt-line-bot/blob/main/static/text2video.mp4?raw=true)
+    <video src="https://github.com/user-attachments/assets/37bbc2ba-2cc5-4143-8941-9395130d34cb" controls width="50"></video>
 
 * **圖片生成影片**
 
-    <img src="static/images/2025-07-23-14-01-43.png" width="30%/>
+    <img src="static/images/2025-07-23-14-01-43.png" width="30%"/>
 
-
+    <video src="https://github.com/user-attachments/assets/6da09107-1d28-43af-ae75-3401a56eabc1" controls width="50"></video>
+    
 * 每週 **星座資訊**（即時）
 
     <img src="img/2023-11-02-10-00-32.png" width="15%"/>
@@ -158,7 +159,7 @@
 * 在群組對話中，使用 `@chat` 前綴與機器人互動，例如，`@chat hi~`。
 
 
-## 🎃 特殊功能詳介
+## 🎃 功能詳介
 
 <details>
 <summary><b>星座運勢查詢</b></summary>
