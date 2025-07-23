@@ -96,7 +96,7 @@ def chat_completion(
                 return video
 
             response = response.choices[0].message.content
-        print(f"Successfully called {method} model.")
+
         return response
 
     except Exception as e:

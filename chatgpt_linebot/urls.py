@@ -213,6 +213,11 @@ def handle_message(event) -> None:
             response = chat_completion(source_id, memory, config.GPT_METHOD, zhipuai_type='img_gen_video')
             send_video_reply(reply_token, response.video_result[0].url, response.video_result[0].cover_image_url)
             response = str(response)
+
+        elif tool in ['search_image_url']:
+            response = eval(f"{tool}('{input_query}')")
+            send_image_reply(reply_token, response)
+
         else:
             response = eval(f"{tool}('{input_query}')")
             send_text_reply(reply_token, response)
