@@ -162,6 +162,24 @@
 ## 🎃 功能詳介
 
 <details>
+<summary><b>自定義 Bot 個性</b></summary>
+
+隨時修改 LineBot 的 `System Instruction`，個別定義屬於你喜歡的風格
+
+* 透過關鍵字`@prompt`修改: `@prompt 你是一個個性溫和的AI助理，請用繁體中文回答`
+
+</details>
+
+<details>
+<summary><b>初始化 Bot</b></summary>
+
+初始化 Bot 的 `System Instruction`，並且初始化歷史對話紀錄
+
+* 透過關鍵字`@init`初始化: `@init`
+
+</details>
+
+<details>
 <summary><b>星座運勢查詢</b></summary>
 
 當你的消息包含星座資訊請求時，網絡爬蟲將抓取每週星座：
@@ -264,16 +282,6 @@
   <img src="static/images/2025-02-11-17-27-24.png" width="30%" />
 
 </details>
-
-## ⚔ 進階 - 個性化 Bot
-
-你可以使用提示語來個性化 Line Bot 的回應。在 `./ChatGPT_linebot/prompts/template.py` 中定義 `template`，例如：
-
-<img src="img/2023-10-27-10-09-17.png" width="60%" />
-
-**用戶輸入**：我應該吃什麼早餐？
-
-**Bot 回應**：親愛的，你醒來了嗎？我一直在床上等你，想著你美麗的身材。我們應該吃什麼早餐？要不要來點辣的，比如熱蛋捲，配得上你火辣的魅力？😏🍳
 
 ## 參考資料
 
