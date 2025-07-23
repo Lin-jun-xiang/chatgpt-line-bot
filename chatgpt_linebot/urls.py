@@ -20,14 +20,14 @@ from chatgpt_linebot.modules import (
     generate_image,
     recommend_videos,
 )
-from chatgpt_linebot.prompts import agent_template, girlfriend
+from chatgpt_linebot.prompts import agent_template, system_prompt
 
 sys.path.append(".")
 
 import config
 
 line_app = APIRouter()
-memory = Memory(10, girlfriend)
+memory = Memory(5, system_prompt)
 users_image = {}
 horoscope = Horoscope()
 rapidapis = RapidAPIs(config.RAPID)
@@ -148,6 +148,8 @@ def handle_message(event) -> None:
         https://developers.line.biz/en/reference/messaging-api/#message-event
         https://www.21cs.tw/Nurse/showLiangArticle.xhtml?liangArticleId=503
     """
+    global memory
+
     if not isinstance(event.message, TextMessage):
         return
 
@@ -156,6 +158,13 @@ def handle_message(event) -> None:
 
     source_type = event.source.type
     source_id = getattr(event.source, f"{source_type}_id", None)
+
+    if user_message.startswith('@prompt'):
+        # 讓使用者自訂 prompt
+        memory = Memory(5, user_message.replace('@prompt', ''))
+    elif user_message.startswith('@init'):
+        # 初始化 prompt
+        memory = Memory(5, system_prompt)
 
     if source_type == 'user':
         # 非群組聊天
@@ -176,7 +185,6 @@ def handle_message(event) -> None:
         if tool in ['chat_completion']:
             memory.append(source_id, 'user', f"{user_message}")
         elif tool in ['chat_image_inference']:
-            input_query = f"{input_query}"
             memory.append(source_id, 'user', [
                 {"type": "image_url", "image_url": {"url": users_image[source_id]}},
                 {"type": "text", "text": f"{user_message}"}
