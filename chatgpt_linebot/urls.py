@@ -76,7 +76,7 @@ def agent(query: str) -> tuple[str]:
     message = [{'role': 'user', 'content': prompt}]
 
     try:
-        response = chat(message, config.GPT_METHOD, config.GPT_API_KEY)
+        response = chat_completion(memory=message, method=config.GPT_METHOD)
 
         result = extract_legal_json(response)
         tool = result.get('tool', 'chat_completion')
@@ -159,9 +159,11 @@ def handle_message(event) -> None:
     if user_message.startswith('@prompt'):
         # 讓使用者自訂 prompt
         memory = Memory(5, user_message.replace('@prompt', ''))
+        print('Reset System Prompt.')
     elif user_message.startswith('@init'):
         # 初始化 prompt
         memory = Memory(5, system_prompt)
+        print('Initialized Bot.')
 
     if source_type == 'user':
         # 非群組聊天
@@ -181,9 +183,9 @@ def handle_message(event) -> None:
 
         if tool in ['chat_completion']:
             memory.append(source_id, 'user', f"{user_message}")
-        elif tool in ['chat_image_inference']:
+        elif tool in ['image_inference']:
             memory.append(source_id, 'user', [
-                {"type": "image_url", "image_url": {"url": memory.image_storage[source_id]}},
+                {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{memory.image_storage[source_id]}"}},
                 {"type": "text", "text": f"{user_message}"}
             ])
         else:
@@ -203,11 +205,13 @@ def handle_message(event) -> None:
 
         elif tool in ['text_gen_video']:
             response = chat_completion(source_id, input_query, config.GPT_METHOD, zhipuai_type='text_gen_video')
-            send_video_reply(reply_token, response.video_result[0].url, response.video_result[0].conver_image_url)
+            send_video_reply(reply_token, response.video_result[0].url, response.video_result[0].cover_image_url)
+            response = str(response)
 
         elif tool in ['img_gen_video']:
             response = chat_completion(source_id, memory, config.GPT_METHOD, zhipuai_type='img_gen_video')
-            send_video_reply(reply_token, response.video_result[0].url, response.video_result[0].conver_image_url)
+            send_video_reply(reply_token, response.video_result[0].url, response.video_result[0].cover_image_url)
+            response = str(response)
         else:
             response = eval(f"{tool}('{input_query}')")
             send_text_reply(reply_token, response)
@@ -236,7 +240,7 @@ def handle_image_message(event) -> None:
         
         image_base64 = base64.b64encode(image_data).decode('utf-8')
 
-        memory.image_storage[source_id] = f"data:image/jpeg;base64,{image_base64}"
+        memory.image_storage[source_id] = f"{image_base64}"
         
         print(f"User {source_id} uploaded image, stored in memory")
 

@@ -1,9 +1,10 @@
 import os
-
 import time
+
 import g4f
 from g4f.client import Client
 from zhipuai import ZhipuAI
+
 from chatgpt_linebot.memory import Memory
 
 g4f.debug.logging = True
@@ -20,6 +21,7 @@ def chat_completion(
     """Use OpenAI API via gpt4free providers"""
     if isinstance(memory, Memory):
         message = memory.get(id)
+        print(f"{memory.get(id)}")
     else:
         message = memory
 
@@ -59,10 +61,9 @@ def chat_completion(
             elif zhipuai_type == 'text_gen_video':
                 response = client.videos.generations(
                     model="cogvideox-flash",
-                    prompt=message,
+                    prompt=str(message),
                     quality="quality",
                     with_audio=True,
-                    size="1920x1080",
                     fps=30,
                 )
                 video = client.videos.retrieve_videos_result(
@@ -79,10 +80,9 @@ def chat_completion(
                 response = client.videos.generations(
                     model="cogvideox-flash",
                     image_url=memory.image_storage[id],
-                    prompt=message,  
+                    prompt=str(message[-1]),
                     quality="quality",
                     with_audio=True,
-                    size="1920x1080",
                     fps=30,
                 )
                 video = client.videos.retrieve_videos_result(
@@ -106,5 +106,4 @@ def chat_completion(
         f"{e}"
         )
         print(e)
-
-    return response
+        return response
