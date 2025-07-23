@@ -27,8 +27,9 @@ class Memory(MemoryInterface):
 
         id (int): user_id, grouop_id, room_id
     """
-    def __init__(self, memory_message_count: int, system_prompt: str) -> None:
+    def __init__(self, memory_message_count: int, system_prompt: str = '') -> None:
         self.storage = defaultdict(list)
+        self.image_storage = {}
         self.memory_message_count = memory_message_count
         self.system_prompt = system_prompt
 

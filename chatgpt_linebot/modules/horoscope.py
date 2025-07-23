@@ -4,7 +4,7 @@ import re
 import requests
 from bs4 import BeautifulSoup
 
-from chatgpt_linebot.modules.gpt import chat_completion
+from chatgpt_linebot.modules.chat import chat_completion
 from chatgpt_linebot.prompts import horoscope_template
 
 
@@ -65,7 +65,7 @@ class Horoscope:
         if not content:
             return f"{self.error_msg}\nContent is None."
         response = chat_completion(
-            [{"role": "user", "content": horoscope_template+content}]
+            memory=[{"role": "user", "content": horoscope_template+content}]
         )
         return response
 

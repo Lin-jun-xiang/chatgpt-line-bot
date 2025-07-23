@@ -1,28 +1,6 @@
 import re
 
 import requests
-from zhipuai import ZhipuAI
-
-
-def generate_image(query: str, api_key: str) -> str:
-    """Should setup the cookies first."""
-    try:
-        client = ZhipuAI(api_key=api_key)
-
-        response = client.images.generations(
-            model="cogview-3-flash",
-            prompt=query,
-        )
-        image_url = response.data[0].url
-        print(f'Successfully generated image from Zhipuai: {image_url}')
-        return image_url
-
-    except Exception as e:
-        print(
-        "There're something wrong in openai api, please try again.\n"
-        "Or connect to developer: https://github.com/Lin-jun-xiang/chatgpt-line-bot/issues \n"
-        f"{e}"
-        )
 
 
 class RapidAPIs:

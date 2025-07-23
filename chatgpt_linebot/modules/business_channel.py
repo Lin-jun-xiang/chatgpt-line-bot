@@ -5,7 +5,7 @@ from typing import Dict, Optional
 import cloudscraper
 from bs4 import BeautifulSoup
 
-from chatgpt_linebot.modules.gpt import chat_completion
+from chatgpt_linebot.modules.chat import chat_completion
 from chatgpt_linebot.prompts import cws_channel_template
 
 sys.path.append(".")
@@ -137,8 +137,7 @@ class CWArticleScraper:
     def get_cws_channel_response(self, article_details: Dict) -> str:
         if article_details:
             response = chat_completion(
-                [{"role": "user", "content": cws_channel_template+str(article_details)}],
-                config.GPT_METHOD,
-                config.GPT_API_KEY
+                memory=[{"role": "user", "content": cws_channel_template+str(article_details)}],
+                method=config.GPT_METHOD,
             )
             return response

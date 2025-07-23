@@ -2,7 +2,6 @@ import base64
 import json
 import re
 import sys
-from urllib.parse import urlparse
 
 from fastapi import APIRouter, HTTPException, Request
 from linebot import LineBotApi, WebhookHandler
@@ -15,9 +14,7 @@ from chatgpt_linebot.modules import (
     Horoscope,
     ImageCrawler,
     RapidAPIs,
-    chat,
     chat_completion,
-    generate_image,
     recommend_videos,
 )
 from chatgpt_linebot.prompts import agent_template, system_prompt
@@ -28,7 +25,6 @@ import config
 
 line_app = APIRouter()
 memory = Memory(5, system_prompt)
-users_image = {}
 horoscope = Horoscope()
 rapidapis = RapidAPIs(config.RAPID)
 cws_scraper = CWArticleScraper()
@@ -59,14 +55,6 @@ async def callback(request: Request) -> str:
     except InvalidSignatureError:
         raise HTTPException(status_code=400, detail="Missing Parameter")
     return "OK"
-
-
-def is_url(string: str) -> bool:
-    try:
-        result = urlparse(string)
-        return all([result.scheme, result.netloc])
-    except ValueError:
-        return False
 
 
 def extract_legal_json(text: str) -> dict:
@@ -108,6 +96,15 @@ def agent(query: str) -> tuple[str]:
     except Exception as e:
         print(f"JSON Parser Error for: {response}")
         return 'chat_completion', query
+
+
+def send_video_reply(reply_token, video_url: str, preview_image_url: str) -> None:
+    """Sends a video message to the user."""
+    video_message = VideoSendMessage(
+        original_content_url=video_url,
+        preview_image_url=preview_image_url
+    )
+    line_bot_api.reply_message(reply_token, messages=video_message)
 
 
 def search_image_url(query: str) -> str:
@@ -186,25 +183,35 @@ def handle_message(event) -> None:
             memory.append(source_id, 'user', f"{user_message}")
         elif tool in ['chat_image_inference']:
             memory.append(source_id, 'user', [
-                {"type": "image_url", "image_url": {"url": users_image[source_id]}},
+                {"type": "image_url", "image_url": {"url": memory.image_storage[source_id]}},
                 {"type": "text", "text": f"{user_message}"}
             ])
         else:
             memory.append(source_id, 'user', f"{user_message}")
 
         if tool in ['chat_completion']:
-            response = chat_completion(source_id, memory, config.GPT_METHOD, config.GPT_API_KEY)
-        elif tool in ['chat_image_inference']:
-            response = chat_completion(source_id, memory, config.GPT_METHOD, config.GPT_API_KEY, vlm=True)
+            response = chat_completion(source_id, memory, config.GPT_METHOD)
+            send_text_reply(reply_token, response)
+
+        elif tool in ['image_inference']:
+            response = chat_completion(source_id, memory, config.GPT_METHOD, zhipuai_type='image_inference')
+            send_text_reply(reply_token, response)
+
         elif tool in ['generate_image']:
-            response = generate_image(input_query, config.GPT_API_KEY)
+            response = chat_completion(source_id, input_query, config.GPT_METHOD, zhipuai_type='image_gen')
+            send_image_reply(reply_token, response)
+
+        elif tool in ['text_gen_video']:
+            response = chat_completion(source_id, input_query, config.GPT_METHOD, zhipuai_type='text_gen_video')
+            send_video_reply(reply_token, response.video_result[0].url, response.video_result[0].conver_image_url)
+
+        elif tool in ['img_gen_video']:
+            response = chat_completion(source_id, memory, config.GPT_METHOD, zhipuai_type='img_gen_video')
+            send_video_reply(reply_token, response.video_result[0].url, response.video_result[0].conver_image_url)
         else:
             response = eval(f"{tool}('{input_query}')")
-
-        if is_url(response):
-            send_image_reply(reply_token, response)
-        else:
             send_text_reply(reply_token, response)
+
         memory.append(source_id, 'system', response)
 
     except Exception as e:
@@ -213,6 +220,8 @@ def handle_message(event) -> None:
 
 @handler.add(MessageEvent, message=(ImageMessage))
 def handle_image_message(event) -> None:
+    global memory
+
     if not isinstance(event.message, ImageMessage):
         return
 
@@ -227,7 +236,7 @@ def handle_image_message(event) -> None:
         
         image_base64 = base64.b64encode(image_data).decode('utf-8')
 
-        users_image[source_id] = f"data:image/jpeg;base64,{image_base64}"
+        memory.image_storage[source_id] = f"data:image/jpeg;base64,{image_base64}"
         
         print(f"User {source_id} uploaded image, stored in memory")
 
