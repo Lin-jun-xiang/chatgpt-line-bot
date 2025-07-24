@@ -31,11 +31,11 @@ class Memory(MemoryInterface):
         self.storage = defaultdict(list)
         self.image_storage = {}
         self.memory_message_count = memory_message_count
-        self.system_prompt = system_prompt
+        self.system_prompts = defaultdict(lambda: system_prompt)
 
     def _initialize(self, id: str) -> None:
         self.storage[id] = [{
-            'role': 'system', 'content': self.system_prompt
+            'role': 'system', 'content': self.system_prompts[id]
         }]
 
     def _drop_message(self, id: str) -> str:
@@ -53,7 +53,15 @@ class Memory(MemoryInterface):
         self._drop_message(id)
 
     def get(self, id: str) -> str:
+        if not self.storage[id]:
+            self._initialize(id)
         return self.storage[id]
 
     def remove(self, id: str) -> None:
         self.storage[id] = []
+        if id in self.system_prompts:
+            del self.system_prompts[id]
+
+    def set_system_prompt(self, id: str, prompt: str) -> None:
+        self.system_prompts[id] = prompt
+        self._initialize(id)

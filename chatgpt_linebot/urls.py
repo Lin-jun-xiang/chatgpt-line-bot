@@ -159,14 +159,15 @@ def handle_message(event) -> None:
 
     if user_message.startswith('@prompt'):
         # 讓使用者自訂 prompt
-        memory = Memory(5, user_message.replace('@prompt', ''))
-        print('Reset System Prompt.')
+        custom_prompt = user_message.replace('@prompt', '').strip()
+        memory.set_system_prompt(source_id, f"System Instruction:\n{custom_prompt}")
+        print(f'Reset System Prompt for user {source_id}.')
         send_text_reply(reply_token, f"Successfully reset system prompt.")
         return
     elif user_message.startswith('@init'):
         # 初始化 prompt
-        memory = Memory(5, system_prompt)
-        print('Initialized Bot.')
+        memory.remove(source_id)
+        print(f'Initialized Bot for user {source_id}.')
         send_text_reply(reply_token, f"Successfully initialized which will clear conversation history.")
         return
 
