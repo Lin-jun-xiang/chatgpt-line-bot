@@ -21,7 +21,6 @@ def chat_completion(
     """Use OpenAI API via gpt4free providers"""
     if isinstance(memory, Memory):
         message = memory.get(id)
-        print(f"{memory.get(id)}")
     else:
         message = memory
 
@@ -63,7 +62,7 @@ def chat_completion(
                     model="cogvideox-flash",
                     prompt=str(message),
                     quality="quality",
-                    with_audio=True,
+                    with_audio=False,
                     fps=30,
                 )
                 video = client.videos.retrieve_videos_result(
@@ -82,7 +81,7 @@ def chat_completion(
                     image_url=memory.image_storage[id],
                     prompt=str(message[-1]),
                     quality="quality",
-                    with_audio=True,
+                    with_audio=False,
                     fps=30,
                 )
                 video = client.videos.retrieve_videos_result(

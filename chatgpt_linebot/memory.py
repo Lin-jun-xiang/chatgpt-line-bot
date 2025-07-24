@@ -39,7 +39,9 @@ class Memory(MemoryInterface):
         }]
 
     def _drop_message(self, id: str) -> str:
+        print(len(self.storage.get(id)))
         if len(self.storage.get(id)) >= (self.memory_message_count + 1) * 2 + 1:
+            print('dropping')
             return [self.storage[id][0]] + self.storage[id][-(self.memory_message_count * 2):]
         return self.storage.get(id)
 

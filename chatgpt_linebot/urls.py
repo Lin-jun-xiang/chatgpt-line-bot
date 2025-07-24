@@ -155,15 +155,20 @@ def handle_message(event) -> None:
 
     source_type = event.source.type
     source_id = getattr(event.source, f"{source_type}_id", None)
+    print('ID:', source_id, 'Memory:', memory.get(source_id))
 
     if user_message.startswith('@prompt'):
         # 讓使用者自訂 prompt
         memory = Memory(5, user_message.replace('@prompt', ''))
         print('Reset System Prompt.')
+        send_text_reply(reply_token, f"Successfully reset system prompt.")
+        return
     elif user_message.startswith('@init'):
         # 初始化 prompt
         memory = Memory(5, system_prompt)
         print('Initialized Bot.')
+        send_text_reply(reply_token, f"Successfully initialized which will clear conversation history.")
+        return
 
     if source_type == 'user':
         # 非群組聊天
